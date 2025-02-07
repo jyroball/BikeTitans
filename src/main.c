@@ -31,6 +31,7 @@ void app_main(void) {
 
     // Perform HTTPS Request
     ESP_LOGI(MAIN_TAG, "Starting HTTPS Request...");
-    https_request();
+    // https_get_test();
+    https_post_test();
     ESP_LOGI(MAIN_TAG, "HTTPS Request Finished!");
 }
