@@ -59,11 +59,13 @@ static inline void https_request(void) {
         .crt_bundle_attach = esp_crt_bundle_attach,  // Use ESP32 CA bundle
         .transport_type = HTTP_TRANSPORT_OVER_SSL,  // Ensure HTTPS
     };
-
+    
     esp_http_client_handle_t client = esp_http_client_init(&config);
-
+    esp_http_client_set_header(client, "Accept", "application/json");
+    
+    // Sent Request
     esp_err_t err = esp_http_client_perform(client);
-
+    
     if (err == ESP_OK) {
         ESP_LOGI(TAG, "HTTPS GET Status = %d, Content length = %" PRId64,
                  esp_http_client_get_status_code(client),
@@ -71,6 +73,8 @@ static inline void https_request(void) {
     } else {
         ESP_LOGE(TAG, "HTTPS GET request failed: %s", esp_err_to_name(err));
     }
-
+    
+    // Cleanup
     esp_http_client_cleanup(client);
+    
 }
