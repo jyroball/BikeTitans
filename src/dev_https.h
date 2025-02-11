@@ -45,7 +45,7 @@ static inline esp_err_t _http_event_handler(esp_http_client_event_t *evt) {
     return ESP_OK;
 }
 
-/* Function to perform HTTPS GET Request */
+// HTTPS Get
 static inline void https_get_test(void) {
     // Ensure Wi-Fi is connected
     if (!is_wifi_connected()) {
@@ -80,6 +80,8 @@ static inline void https_get_test(void) {
     
 }
 
+
+// HTTPS POST
 static inline void https_post_test(void) {
     if (!is_wifi_connected()) {
         ESP_LOGE(TAG, "Wi-Fi is not connected. Cannot make HTTPS request.");
