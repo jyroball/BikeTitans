@@ -90,7 +90,8 @@ void list_files_on_sd()
         return;
     }
 
-    else {
+    else
+    {
         ESP_LOGI(TAG_UPLOAD, "Successfully opened %s", MOUNT_POINT);
     }
 
@@ -124,7 +125,6 @@ void list_files_on_sd()
     closedir(dir);
 }
 
-
 esp_err_t clear_sd_card()
 {
     DIR *dir = opendir(MOUNT_POINT);
@@ -150,3 +150,75 @@ esp_err_t clear_sd_card()
     return ESP_OK;
 }
 
+esp_err_t test_open_file()
+{
+    const char *filename = "test_image.jpg";
+    char long_path[256];
+    snprintf(long_path, sizeof(long_path), "%s/%s", MOUNT_POINT, filename);
+
+    // Try opening the file with the long filename first
+    FILE *file = fopen(long_path, "r");
+    if (file)
+    {
+        ESP_LOGI(TAG_UPLOAD, "Successfully opened (long filename): %s", long_path);
+        fclose(file);
+        return ESP_OK;
+    }
+
+    ESP_LOGW(TAG_UPLOAD, "Failed to open: %s, searching for short filename...", long_path);
+
+    // Scan SD card for matching short filename
+    DIR *dir = opendir(MOUNT_POINT);
+    if (!dir)
+    {
+        ESP_LOGE(TAG_UPLOAD, "Failed to open SD card directory: %s", MOUNT_POINT);
+        return ESP_FAIL;
+    }
+
+    struct dirent *entry;
+    char found_short_name[256] = {0};
+
+    while ((entry = readdir(dir)) != NULL)
+    {
+        ESP_LOGI(TAG_UPLOAD, "Checking file: %s", entry->d_name);
+
+        // Try to match the first part of the filename, assuming 8.3 format
+        if (strncasecmp(entry->d_name, "TEST_I~1.JPG", 12) == 0)
+        {
+            ESP_LOGI(TAG_UPLOAD, "Matched filename: %s -> %s", filename, entry->d_name);
+            // Use snprintf safely to prevent buffer overflow
+            int written = snprintf(found_short_name, sizeof(found_short_name) - 1, "%s/%s", MOUNT_POINT, entry->d_name);
+            found_short_name[sizeof(found_short_name) - 1] = '\0'; // Ensure null termination
+
+            if (written < 0 || written >= (int)sizeof(found_short_name))
+            {
+                ESP_LOGE(TAG_UPLOAD, "Path truncated: %s", found_short_name);
+                closedir(dir);
+                return ESP_FAIL;
+            }
+            break;
+        }
+    }
+    closedir(dir);
+
+    // If no match was found
+    if (found_short_name[0] == '\0')
+    {
+        ESP_LOGE(TAG_UPLOAD, "No short filename found for %s", long_path);
+        return ESP_FAIL;
+    }
+
+    // Try opening the file with the found short filename
+    file = fopen(found_short_name, "r");
+    if (file)
+    {
+        ESP_LOGI(TAG_UPLOAD, "Successfully opened (short filename): %s", found_short_name);
+        fclose(file);
+        return ESP_OK;
+    }
+    else
+    {
+        ESP_LOGE(TAG_UPLOAD, "Failed to open short filename: %s", found_short_name);
+        return ESP_FAIL;
+    }
+}

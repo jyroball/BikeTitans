@@ -48,6 +48,10 @@ void app_main(void)
     // ESP_LOGI(MAIN_TAG, "Clearing SD card...");
     // clear_sd_card();
 
+    
+    ESP_LOGI(MAIN_TAG, "Reading hardcoded file...");
+    test_open_file();
+
     vTaskDelay(5000 / portTICK_PERIOD_MS);
     unmount_sd_card();
 
