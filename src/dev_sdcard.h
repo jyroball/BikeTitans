@@ -10,7 +10,7 @@
 #include "sdmmc_cmd.h"
 
 #define MOUNT_POINT "/sdcard"
-#define TAG_UPLOAD "DEV_UPLOAD"
+#define TAG_UPLOAD "DEV_SDCARD"
 
 static sdmmc_card_t *sd_card;
 
