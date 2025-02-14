@@ -1,8 +1,8 @@
-#ifndef DEV_UPLOAD_H
-#define DEV_UPLOAD_H
+#pragma once
 
 #include <stdio.h>
 #include <dirent.h>
+#include <string.h>
 #include <sys/unistd.h>
 #include "esp_log.h"
 #include "esp_vfs_fat.h"
@@ -38,16 +38,16 @@ esp_err_t mount_sd_card()
     sdmmc_host_t host = SDMMC_HOST_DEFAULT();
     sdmmc_slot_config_t slot_config = SDMMC_SLOT_CONFIG_DEFAULT();
 
-    // Update GPIO pins for ESP32-WROVER
-    slot_config.clk = GPIO_NUM_14;
-    slot_config.cmd = GPIO_NUM_15;
-    slot_config.d0 = GPIO_NUM_2;
-    slot_config.d1 = GPIO_NUM_4;
-    slot_config.d2 = GPIO_NUM_12;
-    slot_config.d3 = GPIO_NUM_13;
+    // // Update GPIO pins for ESP32-WROVER
+    // slot_config.clk = GPIO_NUM_14;
+    // slot_config.cmd = GPIO_NUM_15;
+    // slot_config.d0 = GPIO_NUM_2;
+    // slot_config.d1 = GPIO_NUM_4;
+    // slot_config.d2 = GPIO_NUM_12;
+    // slot_config.d3 = GPIO_NUM_13;
 
     // Enable internal pullups on the SD card lines
-    slot_config.width = 4; // Use 4-bit mode
+    slot_config.width = 1; // Use 1-bit mode
     slot_config.flags |= SDMMC_SLOT_FLAG_INTERNAL_PULLUP;
 
     const esp_vfs_fat_mount_config_t mount_config = {
@@ -65,47 +65,65 @@ esp_err_t mount_sd_card()
     }
 
     ESP_LOGI(TAG_UPLOAD, "SD card mounted successfully.");
-    sdmmc_card_print_info(stdout, sd_card);
 
     // Print SD card type
     const char *card_type = get_sd_card_type(sd_card);
     ESP_LOGI(TAG_UPLOAD, "SD card type: %s", card_type);
 
+    sdmmc_card_print_info(stdout, sd_card);
+
     return ESP_OK;
 }
 
-esp_err_t save_image_to_sd(const char *source_path, const char *dest_name)
+void unmount_sd_card()
 {
-    char dest_path[128];
-    snprintf(dest_path, sizeof(dest_path), "%s/%s", MOUNT_POINT, dest_name);
-
-    FILE *src = fopen(source_path, "rb");
-    if (!src)
-    {
-        ESP_LOGE(TAG_UPLOAD, "Failed to open source file: %s", source_path);
-        return ESP_FAIL;
-    }
-
-    FILE *dst = fopen(dest_path, "wb");
-    if (!dst)
-    {
-        fclose(src);
-        ESP_LOGE(TAG_UPLOAD, "Failed to create destination file: %s", dest_path);
-        return ESP_FAIL;
-    }
-
-    uint8_t buffer[1024];
-    size_t bytes_read;
-    while ((bytes_read = fread(buffer, 1, sizeof(buffer), src)) > 0)
-    {
-        fwrite(buffer, 1, bytes_read, dst);
-    }
-
-    fclose(src);
-    fclose(dst);
-    ESP_LOGI(TAG_UPLOAD, "File saved successfully: %s", dest_path);
-    return ESP_OK;
+    esp_vfs_fat_sdcard_unmount(MOUNT_POINT, sd_card);
+    ESP_LOGI(TAG_UPLOAD, "SD card unmounted");
 }
+
+void list_files_on_sd()
+{
+    DIR *dir = opendir(MOUNT_POINT);
+    if (!dir)
+    {
+        ESP_LOGE(TAG_UPLOAD, "Failed to open SD card directory: %s", MOUNT_POINT);
+        return;
+    }
+
+    else {
+        ESP_LOGI(TAG_UPLOAD, "Successfully opened %s", MOUNT_POINT);
+    }
+
+    struct dirent *entry;
+    while ((entry = readdir(dir)) != NULL)
+    {
+        char file_path[256];
+        size_t base_len = strlen(MOUNT_POINT);
+        size_t name_len = strlen(entry->d_name);
+
+        // Ensure the total length does not exceed buffer size
+        if (base_len + 1 + name_len >= sizeof(file_path))
+        {
+            ESP_LOGW(TAG_UPLOAD, "Skipping long file path: %s/%s", MOUNT_POINT, entry->d_name);
+            continue;
+        }
+
+        // Copy base path
+        strncpy(file_path, MOUNT_POINT, sizeof(file_path) - 1);
+        file_path[sizeof(file_path) - 1] = '\0'; // Null terminate
+
+        // Append '/' only if there's enough space
+        strncat(file_path, "/", sizeof(file_path) - strlen(file_path) - 1);
+
+        // Append file name safely
+        strncat(file_path, entry->d_name, sizeof(file_path) - strlen(file_path) - 1);
+
+        ESP_LOGI(TAG_UPLOAD, "File: %s", file_path);
+    }
+
+    closedir(dir);
+}
+
 
 esp_err_t clear_sd_card()
 {
@@ -132,10 +150,3 @@ esp_err_t clear_sd_card()
     return ESP_OK;
 }
 
-void unmount_sd_card()
-{
-    esp_vfs_fat_sdcard_unmount(MOUNT_POINT, sd_card);
-    ESP_LOGI(TAG_UPLOAD, "SD card unmounted");
-}
-
-#endif
