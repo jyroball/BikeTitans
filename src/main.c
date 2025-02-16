@@ -9,6 +9,7 @@
 // #include "dev_https.h"
 #include "dev_wifi.h"
 #include "dev_gdrive.h"
+#include "dev_time.h"
 // #include "dev_sdcard.h"
 
 static const char *MAIN_TAG = "MAIN";
@@ -33,9 +34,22 @@ void app_main(void)
     vTaskDelay(5000 / portTICK_PERIOD_MS);
     ESP_LOGI(MAIN_TAG, "Wi-Fi setup complete!");
 
+    // Initialize Time
+    ESP_LOGI(MAIN_TAG, "Initializing Clock...");
+    sync_time();
+
+    vTaskDelay(5000 / portTICK_PERIOD_MS);
+    ESP_LOGI(MAIN_TAG, "Time Synced!");
+
     char *jwt = create_jwt();
     ESP_LOGI(MAIN_TAG, "JWT: %s", jwt);
     free(jwt);
+
+    vTaskDelay(5000 / portTICK_PERIOD_MS);
+
+    char *token = get_access_token();
+    ESP_LOGI(MAIN_TAG, "ACCESS TOKEN: %s", token);
+    free(token);
 
     // // SD Card Tests
     // ESP_LOGI(MAIN_TAG, "Mounting SD Card...");
