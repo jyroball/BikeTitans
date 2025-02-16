@@ -1,8 +1,6 @@
 #include "esp_sntp.h"
 #define TIME_TAG "TIME"
 
-#include "esp_sntp.h"
-
 void sync_time()
 {
     ESP_LOGI(TIME_TAG, "Initializing SNTP");

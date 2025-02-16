@@ -1,16 +1,13 @@
 #include <stdio.h>
-#include "esp_system.h"
 #include "esp_log.h"
 #include "nvs_flash.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
-#include <dirent.h>
 
-// #include "dev_https.h"
 #include "dev_wifi.h"
 #include "dev_gdrive.h"
 #include "dev_time.h"
-// #include "dev_sdcard.h"
+#include "dev_sdcard.h"
 
 static const char *MAIN_TAG = "MAIN";
 
@@ -58,23 +55,23 @@ void app_main(void)
     }
 
     // SD Card Tests
-    // ESP_LOGI(MAIN_TAG, "Mounting SD Card...");
-    // mount_sd_card();
-    // vTaskDelay(5000 / portTICK_PERIOD_MS);
+    ESP_LOGI(MAIN_TAG, "Mounting SD Card...");
+    mount_sd_card();
+    vTaskDelay(5000 / portTICK_PERIOD_MS);
 
-    // ESP_LOGI(MAIN_TAG, "Checking SD card files...");
-    // list_files_on_sd();
-    // vTaskDelay(5000 / portTICK_PERIOD_MS);
+    ESP_LOGI(MAIN_TAG, "Checking SD card files...");
+    list_files_on_sd();
+    vTaskDelay(5000 / portTICK_PERIOD_MS);
 
-    // ESP_LOGI(MAIN_TAG, "Reading hardcoded file...");
-    // test_open_file();
+    ESP_LOGI(MAIN_TAG, "Reading hardcoded file...");
+    test_open_file();
 
-    // // // ESP_LOGI(MAIN_TAG, "Clearing SD card...");
-    // // // clear_sd_card();
+    // ESP_LOGI(MAIN_TAG, "Clearing SD card...");
+    // clear_sd_card();
 
-    // ESP_LOGI(MAIN_TAG, "Unmounting SD Card...");
-    // vTaskDelay(5000 / portTICK_PERIOD_MS);
-    // unmount_sd_card();
+    ESP_LOGI(MAIN_TAG, "Unmounting SD Card...");
+    vTaskDelay(5000 / portTICK_PERIOD_MS);
+    unmount_sd_card();
 
     ESP_LOGI(MAIN_TAG, "All tests completed.");
     return;
