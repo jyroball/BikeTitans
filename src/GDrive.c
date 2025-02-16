@@ -1,4 +1,5 @@
-#include <GDrive.h>
+#include "GDrive.h"
+#include "SD.h"
 
 static esp_err_t _http_event_handler(esp_http_client_event_t *evt)
 {
@@ -343,4 +344,9 @@ char *get_access_token(void)
     }
 
     return access_token;
+}
+
+void upload_file(char *filepath)
+{
+    return;
 }
