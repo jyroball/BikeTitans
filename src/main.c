@@ -4,8 +4,8 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
-#include "dev_wifi.h"
-#include "dev_gdrive.h"
+#include "WiFi.h"
+#include "GDrive.h"
 #include "dev_time.h"
 #include "dev_sdcard.h"
 

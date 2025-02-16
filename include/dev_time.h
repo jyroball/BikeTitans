@@ -1,3 +1,5 @@
+#pragma once
+
 #include "esp_sntp.h"
 #define TIME_TAG "TIME"
 

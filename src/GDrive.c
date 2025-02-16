@@ -1,29 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
-#include "cJSON.h"
-#include "mbedtls/base64.h"
-#include "mbedtls/pk.h"
-#include "mbedtls/entropy.h"
-#include "mbedtls/ctr_drbg.h"
-#include "esp_log.h"
-#include "esp_http_client.h"
-#include "esp_crt_bundle.h"
-
-#include "Credentials.h"
-#include "dev_wifi.h"
-
-#define JWT_EXPIRATION_SECONDS 3600
-#define MAX_RESPONSE_SIZE 2048
-#define TAG "GDRIVE"
-
-typedef struct
-{
-    char *buffer;
-    int buffer_len;
-    int buffer_size;
-} http_response_t;
+#include "GDrive.h"
 
 static esp_err_t _http_event_handler(esp_http_client_event_t *evt)
 {
