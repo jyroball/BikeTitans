@@ -369,3 +369,8 @@ char *get_access_token(void)
 
     return access_token;
 }
+
+void upload_file(char *filename)
+{
+    return;
+}
