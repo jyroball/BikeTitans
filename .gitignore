@@ -1,3 +1,4 @@
 .pio
 .vscode/
 src/dev_cred*
+include/dev_cred**
