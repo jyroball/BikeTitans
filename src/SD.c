@@ -1,13 +1,4 @@
-#pragma once
-
-#include <dirent.h>
-#include "esp_log.h"
-#include "esp_vfs_fat.h"
-#include "driver/sdmmc_host.h"
-#include "sdmmc_cmd.h"
-
-#define MOUNT_POINT "/sdcard"
-#define TAG_UPLOAD "DEV_SDCARD"
+#include "SD.h"
 
 static sdmmc_card_t *sd_card;
 

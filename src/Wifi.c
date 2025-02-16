@@ -1,14 +1,7 @@
-#pragma once
 
-#include "esp_log.h"
-#include "esp_wifi.h"
-#include "esp_event.h"
-
-#define WIFI_SSID "BikeTitans"
-#define WIFI_PASS "testing123456"
+#include "WiFi.h"
 
 static EventGroupHandle_t s_wifi_event_group;
-#define WIFI_CONNECTED_BIT BIT0
 
 static void wifi_event_handler(void *arg, esp_event_base_t event_base, int32_t event_id, void *event_data)
 {
