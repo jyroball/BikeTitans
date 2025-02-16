@@ -53,6 +53,8 @@ def create_jwt():
     signature = private_key.sign(message, padding.PKCS1v15(), SHA256())
     encoded_signature = base64.urlsafe_b64encode(signature).decode().rstrip("=")
 
+    print(f"{encoded_header}.{encoded_payload}.{encoded_signature}")
+
     return f"{encoded_header}.{encoded_payload}.{encoded_signature}"
 
 
@@ -112,30 +114,14 @@ def upload_file(file_path, file_name):
             files=files,
         )
     else:
-        metadata = {
-            "name": file_name,
-            "parents": [FOLDER_ID],  # Folder ID
-        }
-
-        files = {
-            "metadata": ("metadata.json", json.dumps(metadata), "application/json"),
-            "file": (file_name, open(file_path, "rb"), "application/octet-stream"),
-        }
-
-        # If file does not exist, create a new one with POST
-        upload_url = (
-            "https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart"
-        )
-        response = requests.post(
-            upload_url,
-            headers={"Authorization": f"Bearer {access_token}"},
-            files=files,
-        )
+        return
 
     print(response.json())
 
 
 # TEST UPLOAD
 
-upload_file("test_image.jpg", "test_image.jpg")
+# upload_file("test_image.jpg", "test_image.jpg")
+
+create_jwt()
 # upload_file("test_image_2.jpeg", "test_image.jpg")
