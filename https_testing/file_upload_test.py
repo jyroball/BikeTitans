@@ -123,5 +123,5 @@ def upload_file(file_path, file_name):
 
 # upload_file("test_image.jpg", "test_image.jpg")
 
-create_jwt()
+# create_jwt()
 # upload_file("test_image_2.jpeg", "test_image.jpg")

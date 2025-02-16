@@ -1,9 +1,6 @@
 #pragma once
 
-#include <stdio.h>
 #include <dirent.h>
-#include <string.h>
-#include <sys/unistd.h>
 #include "esp_log.h"
 #include "esp_vfs_fat.h"
 #include "driver/sdmmc_host.h"

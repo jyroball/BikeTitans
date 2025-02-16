@@ -42,16 +42,22 @@ void app_main(void)
     ESP_LOGI(MAIN_TAG, "Time Synced!");
 
     char *jwt = create_jwt();
-    ESP_LOGI(MAIN_TAG, "JWT: %s", jwt);
-    free(jwt);
+    if (jwt)
+    {
+        ESP_LOGI(MAIN_TAG, "JWT IS %s", jwt);
+        free(jwt);
+    }
 
-    vTaskDelay(5000 / portTICK_PERIOD_MS);
+    vTaskDelay(2000 / portTICK_PERIOD_MS);
 
-    char *token = get_access_token();
-    ESP_LOGI(MAIN_TAG, "ACCESS TOKEN: %s", token);
-    free(token);
+    char *access_token = get_access_token();
+    if (access_token)
+    {
+        ESP_LOGI(MAIN_TAG, "ACCESS TOKEN IS %s", access_token);
+        free(access_token);
+    }
 
-    // // SD Card Tests
+    // SD Card Tests
     // ESP_LOGI(MAIN_TAG, "Mounting SD Card...");
     // mount_sd_card();
     // vTaskDelay(5000 / portTICK_PERIOD_MS);
@@ -63,18 +69,8 @@ void app_main(void)
     // ESP_LOGI(MAIN_TAG, "Reading hardcoded file...");
     // test_open_file();
 
-    // // ESP_LOGI(MAIN_TAG, "GDrive file upload...");
-    // // esp_err_t result = patch_file_on_gdrive("/sdcard/TEST_I~1.JPG");
-    // // if (result != ESP_OK)
-    // // {
-    // //     ESP_LOGE(MAIN_TAG, "Failed to update file on Google Drive");
-    // // }
-
-    // // ESP_LOGI(MAIN_TAG, "Clearing SD card...");
-    // // clear_sd_card();
-
-    // ESP_LOGI(MAIN_TAG, "HTTPS Posting...");
-    // https_post_test();
+    // // // ESP_LOGI(MAIN_TAG, "Clearing SD card...");
+    // // // clear_sd_card();
 
     // ESP_LOGI(MAIN_TAG, "Unmounting SD Card...");
     // vTaskDelay(5000 / portTICK_PERIOD_MS);
