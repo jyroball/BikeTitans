@@ -6,8 +6,8 @@
 
 #include "WiFi.h"
 #include "GDrive.h"
-#include "dev_time.h"
-#include "dev_sdcard.h"
+#include "TimeSync.h"
+#include "SD.h"
 
 static const char *MAIN_TAG = "MAIN";
 

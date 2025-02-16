@@ -1,13 +1,4 @@
-#pragma once
-
-#include <dirent.h>
-#include "esp_log.h"
-#include "esp_vfs_fat.h"
-#include "driver/sdmmc_host.h"
-#include "sdmmc_cmd.h"
-
-#define MOUNT_POINT "/sdcard"
-#define TAG_UPLOAD "DEV_SDCARD"
+#include "SD.h"
 
 static sdmmc_card_t *sd_card;
 
@@ -138,7 +129,7 @@ esp_err_t clear_sd_card()
         { // Skip directories
             char full_path[FILENAME_MAX];
             snprintf(full_path, sizeof(full_path), "%s/%s", MOUNT_POINT, entry->d_name);
-            unlink(full_path);
+            f_unlink(full_path);
             ESP_LOGI(TAG_UPLOAD, "Deleted file: %s", full_path);
         }
     }
