@@ -32,7 +32,7 @@ void app_main(void)
     ESP_LOGI(MAIN_TAG, "Wi-Fi setup complete!");
 
     // Initialize Time
-    ESP_LOGI(MAIN_TAG, "Initializing Clock...");
+    ESP_LOGI(MAIN_TAG, "Getting Current Time...");
     sync_time();
 
     vTaskDelay(5000 / portTICK_PERIOD_MS);

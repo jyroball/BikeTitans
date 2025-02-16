@@ -1,11 +1,16 @@
-#pragma once
+#include <esp_sntp.h>
+#include <esp_log.h>
+#include <time.h>
+#include <stdlib.h>
 
-#include "esp_sntp.h"
-#define TIME_TAG "TIME"
+#define TIME_TAG "TIME_SYNC"
 
 void sync_time()
 {
-    ESP_LOGI(TIME_TAG, "Initializing SNTP");
+
+    // Set the timezone to US Los Angeles (Pacific Time)
+    setenv("TZ", "PST8PDT,M3.2.0,M11.1.0", 1); // PST8PDT for Pacific Time with DST rules
+    tzset();                                   // Apply the timezone settings
 
     esp_sntp_setoperatingmode(SNTP_OPMODE_POLL);
     esp_sntp_setservername(0, "pool.ntp.org"); // Use a global NTP server
