@@ -4,10 +4,10 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
-#include "GDrive.h"
-#include "SD.h"
-#include "Time.h"
-#include "WiFi.h"
+#include "dev_wifi.h"
+#include "dev_gdrive.h"
+#include "dev_time.h"
+#include "dev_sdcard.h"
 
 static const char *MAIN_TAG = "MAIN";
 
