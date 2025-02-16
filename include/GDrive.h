@@ -31,9 +31,7 @@ typedef struct
 void base64url_encode(const unsigned char *input, size_t input_len, char *output, size_t output_size);
 
 // Function to generate JWT
-char *create_jwt(void);
+char *create_jwt();
 
 // Function to generate Google oAuth access token
 char *get_access_token(void);
-
-void upload_file(char *filepath);
