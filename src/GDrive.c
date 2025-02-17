@@ -400,6 +400,10 @@ esp_err_t upload_file()
         free(file_path);
         return ESP_FAIL;
     }
+    else
+    {
+        ESP_LOGI(TAG, "Obtained Access Token!");
+    }
 
     FILE *file = fopen(file_path, "rb");
     if (!file)
@@ -439,6 +443,8 @@ esp_err_t upload_file()
         free(access_token);
         return ESP_FAIL;
     }
+
+    ESP_LOGI(TAG, "Created metadata JSON: %s", metadata_str);
 
     // Define boundary
     const char *boundary = "boundary123";
@@ -500,6 +506,8 @@ esp_err_t upload_file()
     // Calculate total size
     size_t total_size = strlen(metadata_part) + strlen(file_header) + file_size + strlen(end_boundary);
 
+    ESP_LOGI(TAG, "Preparing HTTPS Request...");
+
     // Prepare HTTP client
     esp_http_client_config_t config = {
         .url = GDRIVE_UPLOAD_URL,
@@ -524,8 +532,9 @@ esp_err_t upload_file()
         return ESP_FAIL;
     }
 
-    // Set authorization header
-    char *auth_header = malloc(strlen(access_token) + 32);
+    // Set headers
+    size_t auth_header_size = strlen("Bearer ") + strlen(access_token) + 1;
+    char *auth_header = malloc(auth_header_size);
     if (!auth_header)
     {
         ESP_LOGE(TAG, "Memory allocation failed for auth header.");
@@ -538,12 +547,12 @@ esp_err_t upload_file()
         free(access_token);
         return ESP_FAIL;
     }
-    snprintf(auth_header, strlen(access_token) + 32, "Bearer %s", access_token);
+    snprintf(auth_header, auth_header_size, "Bearer %s", access_token);
     esp_http_client_set_header(client, "Authorization", auth_header);
     esp_http_client_set_header(client, "Content-Type", "multipart/form-data; boundary=boundary123");
 
-    esp_err_t err = esp_http_client_open(client, total_size);
-    if (err != ESP_OK)
+    // Open connection
+    if (esp_http_client_open(client, total_size) != ESP_OK)
     {
         ESP_LOGE(TAG, "Failed to open HTTP connection.");
         free(metadata_part);
@@ -554,57 +563,48 @@ esp_err_t upload_file()
         fclose(file);
         free(file_path);
         free(access_token);
-        return err;
-    }
-
-    // Send metadata
-    esp_http_client_write(client, metadata_part, strlen(metadata_part));
-    free(metadata_part);
-
-    // Send file header
-    esp_http_client_write(client, file_header, strlen(file_header));
-    free(file_header);
-
-    // Send file content
-    const size_t chunk_size = 2048;
-    char *buffer = malloc(chunk_size);
-    if (!buffer)
-    {
-        ESP_LOGE(TAG, "Failed to allocate chunk buffer.");
-        free(auth_header);
-        esp_http_client_cleanup(client);
-        fclose(file);
-        free(file_path);
-        free(access_token);
         return ESP_FAIL;
     }
 
-    size_t bytes_read;
-    size_t total_bytes_sent = 0;
-    while ((bytes_read = fread(buffer, 1, chunk_size, file)) > 0)
+    ESP_LOGI(TAG, "Sending MetaData + Headers...");
+
+    // Write metadata
+    esp_http_client_write(client, metadata_part, strlen(metadata_part));
+    free(metadata_part);
+
+    // Write file header
+    esp_http_client_write(client, file_header, strlen(file_header));
+    free(file_header);
+
+    ESP_LOGI(TAG, "Sending File...");
+    // Write file data in chunks
+    char *buffer = malloc(8192);
+    size_t bytes_read, bytes_written, total_bytes_sent = 0;
+    while ((bytes_read = fread(buffer, 1, 8192, file)) > 0)
     {
-        esp_err_t write_err = esp_http_client_write(client, buffer, bytes_read);
-        if (write_err <= 0)
+        bytes_written = esp_http_client_write(client, buffer, bytes_read);
+        if (bytes_written <= 0)
         {
-            ESP_LOGE(TAG, "Failed to write chunk to HTTP stream.");
+            ESP_LOGE(TAG, "Chunk write failed.");
             free(buffer);
+            free(auth_header);
             esp_http_client_cleanup(client);
             fclose(file);
+            free(file_path);
             free(access_token);
             return ESP_FAIL;
         }
-        total_bytes_sent += bytes_read;
+        total_bytes_sent += bytes_written;
         ESP_LOGI(TAG, "Uploaded %zu/%ld bytes...", total_bytes_sent, file_size);
     }
-
     free(buffer);
     fclose(file);
 
-    // Send final boundary
+    // Write end boundary
     esp_http_client_write(client, end_boundary, strlen(end_boundary));
     free(end_boundary);
 
-    // Finalize request
+    // Close connection
     esp_http_client_close(client);
     esp_http_client_cleanup(client);
     free(auth_header);
