@@ -63,7 +63,7 @@ void app_main(void)
     list_files_on_sd();
     vTaskDelay(5000 / portTICK_PERIOD_MS);
 
-    ESP_LOGI(MAIN_TAG, "Reading hardcoded file...");
+    ESP_LOGI(MAIN_TAG, "Opening all JPG files...");
     test_open_file();
 
     // ESP_LOGI(MAIN_TAG, "Clearing SD card...");

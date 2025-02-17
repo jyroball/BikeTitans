@@ -140,22 +140,6 @@ esp_err_t clear_sd_card()
 
 esp_err_t test_open_file()
 {
-    const char *filename = "test_image.jpg";
-    char long_path[256];
-    snprintf(long_path, sizeof(long_path), "%s/%s", MOUNT_POINT, filename);
-
-    // Try opening the file with the long filename first
-    FILE *file = fopen(long_path, "r");
-    if (file)
-    {
-        ESP_LOGI(TAG_UPLOAD, "Successfully opened (long filename): %s", long_path);
-        fclose(file);
-        return ESP_OK;
-    }
-
-    ESP_LOGW(TAG_UPLOAD, "Failed to open: %s, searching for short filename...", long_path);
-
-    // Scan SD card for matching short filename
     DIR *dir = opendir(MOUNT_POINT);
     if (!dir)
     {
@@ -164,49 +148,49 @@ esp_err_t test_open_file()
     }
 
     struct dirent *entry;
-    char found_short_name[256] = {0};
+    bool any_opened = false;
 
     while ((entry = readdir(dir)) != NULL)
     {
-        ESP_LOGI(TAG_UPLOAD, "Checking file: %s", entry->d_name);
-
-        // Try to match the first part of the filename, assuming 8.3 format
-        if (strncasecmp(entry->d_name, "TEST_I~1.JPG", 12) == 0)
+        // Check if the file ends with ".JPG" (case insensitive)
+        size_t len = strlen(entry->d_name);
+        if (len > 4 && strcasecmp(&entry->d_name[len - 4], ".JPG") == 0)
         {
-            ESP_LOGI(TAG_UPLOAD, "Matched filename: %s -> %s", filename, entry->d_name);
-            // Use snprintf safely to prevent buffer overflow
-            int written = snprintf(found_short_name, sizeof(found_short_name) - 1, "%s/%s", MOUNT_POINT, entry->d_name);
-            found_short_name[sizeof(found_short_name) - 1] = '\0'; // Ensure null termination
+            char full_path[FILENAME_MAX]; // Use FILENAME_MAX for safer buffer size
 
-            if (written < 0 || written >= (int)sizeof(found_short_name))
+            // Ensure the full path does not exceed buffer size
+            int written = snprintf(full_path, sizeof(full_path), "%s/%s", MOUNT_POINT, entry->d_name);
+            if (written < 0 || written >= (int)sizeof(full_path))
             {
-                ESP_LOGE(TAG_UPLOAD, "Path truncated: %s", found_short_name);
-                closedir(dir);
-                return ESP_FAIL;
+                ESP_LOGE(TAG_UPLOAD, "Path truncated, skipping: %s/%s", MOUNT_POINT, entry->d_name);
+                continue; // Skip this file and move to the next
             }
-            break;
+
+            // Try opening the file
+            FILE *file = fopen(full_path, "r");
+            if (file)
+            {
+                ESP_LOGI(TAG_UPLOAD, "Successfully opened: %s", full_path);
+                fclose(file);
+                any_opened = true;
+            }
+            else
+            {
+                ESP_LOGE(TAG_UPLOAD, "Failed to open: %s", full_path);
+            }
         }
     }
+
     closedir(dir);
 
-    // If no match was found
-    if (found_short_name[0] == '\0')
+    if (any_opened)
     {
-        ESP_LOGE(TAG_UPLOAD, "No short filename found for %s", long_path);
-        return ESP_FAIL;
-    }
-
-    // Try opening the file with the found short filename
-    file = fopen(found_short_name, "r");
-    if (file)
-    {
-        ESP_LOGI(TAG_UPLOAD, "Successfully opened (short filename): %s", found_short_name);
-        fclose(file);
+        ESP_LOGI(TAG_UPLOAD, "All .JPG files were processed.");
         return ESP_OK;
     }
     else
     {
-        ESP_LOGE(TAG_UPLOAD, "Failed to open short filename: %s", found_short_name);
+        ESP_LOGE(TAG_UPLOAD, "No .JPG files were successfully opened.");
         return ESP_FAIL;
     }
 }
