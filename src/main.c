@@ -38,33 +38,36 @@ void app_main(void)
     vTaskDelay(5000 / portTICK_PERIOD_MS);
     ESP_LOGI(MAIN_TAG, "Time Synced!");
 
-    char *jwt = create_jwt();
-    if (jwt)
-    {
-        ESP_LOGI(MAIN_TAG, "JWT IS %s", jwt);
-        free(jwt);
-    }
+    // char *jwt = create_jwt();
+    // if (jwt)
+    // {
+    //     ESP_LOGI(MAIN_TAG, "JWT IS %s", jwt);
+    //     free(jwt);
+    // }
 
-    vTaskDelay(2000 / portTICK_PERIOD_MS);
+    // vTaskDelay(2000 / portTICK_PERIOD_MS);
 
-    char *access_token = get_access_token();
-    if (access_token)
-    {
-        ESP_LOGI(MAIN_TAG, "ACCESS TOKEN IS %s", access_token);
-        free(access_token);
-    }
+    // char *access_token = get_access_token();
+    // if (access_token)
+    // {
+    //     ESP_LOGI(MAIN_TAG, "ACCESS TOKEN IS %s", access_token);
+    //     free(access_token);
+    // }
 
     // SD Card Tests
     ESP_LOGI(MAIN_TAG, "Mounting SD Card...");
     mount_sd_card();
     vTaskDelay(5000 / portTICK_PERIOD_MS);
 
-    ESP_LOGI(MAIN_TAG, "Checking SD card files...");
-    list_files_on_sd();
-    vTaskDelay(5000 / portTICK_PERIOD_MS);
+    // ESP_LOGI(MAIN_TAG, "Checking SD card files...");
+    // list_files_on_sd();
+    // vTaskDelay(5000 / portTICK_PERIOD_MS);
 
-    ESP_LOGI(MAIN_TAG, "Opening all JPG files...");
-    test_open_file();
+    // ESP_LOGI(MAIN_TAG, "Opening all JPG files...");
+    // test_open_file();
+
+    ESP_LOGI(MAIN_TAG, "Uploading (Overwriting) file on GDrive...");
+    upload_file();
 
     // ESP_LOGI(MAIN_TAG, "Clearing SD card...");
     // clear_sd_card();

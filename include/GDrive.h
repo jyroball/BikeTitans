@@ -16,6 +16,7 @@
 
 #include "Credentials.h"
 #include "WiFi.h"
+#include "SD.h"
 
 #define JWT_EXPIRATION_SECONDS 3600
 #define MAX_RESPONSE_SIZE 2048
@@ -35,4 +36,4 @@ void base64url_encode(const unsigned char *input, size_t input_len, char *output
 char *create_jwt();
 char *get_access_token(void);
 
-void upload_file(char *filename);
+esp_err_t upload_file(void);
