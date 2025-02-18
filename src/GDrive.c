@@ -55,13 +55,12 @@ static esp_err_t _http_event_handler(esp_http_client_event_t *evt)
     return ESP_OK;
 }
 
-// Base64 URL encoding function (removes padding and replaces characters)
+// Base64 URL encoding function
 void base64url_encode(const unsigned char *input, size_t input_len, char *output, size_t output_size)
 {
     size_t olen;
     mbedtls_base64_encode((unsigned char *)output, output_size, &olen, input, input_len);
 
-    // Replace URL-unsafe characters and remove padding
     for (size_t i = 0; i < olen; i++)
     {
         if (output[i] == '+')
