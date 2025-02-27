@@ -109,7 +109,7 @@ void app_main() {
     init_camera();
     init_sd_card();
     while (1) {
-        //capture_and_save_photo();
-        //vTaskDelay(10000 / portTICK_PERIOD_MS);
+        capture_and_save_photo();
+        vTaskDelay(10000 / portTICK_PERIOD_MS);
     }
 }
