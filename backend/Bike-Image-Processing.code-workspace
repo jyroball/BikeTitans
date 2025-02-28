@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"name": "Bike-Image-Processing",
+			"path": "."
+		},
+		{
+			"name": "opencv2.framework",
+			"path": "../../Downloads/opencv2.framework"
+		}
+	],
+	"settings": {}
+}
