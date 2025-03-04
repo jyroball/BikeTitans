@@ -172,7 +172,7 @@ void app_main()
 
         }
 
-        vTaskDelay(pdMS_TO_TICKS(10000));
+        vTaskDelay(pdMS_TO_TICKS(2000));
 
 
         ESP_LOGI(MAIN_TAG, "Unmounting SD Card...");
