@@ -1,115 +1,177 @@
-#include <stdio.h>
+#include <esp_log.h>
+#include <esp_system.h>
+#include <nvs_flash.h>
+#include <sys/param.h>
+#include <string.h>
+
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+
 #include "esp_camera.h"
-#include "esp_log.h"
-#include "esp_system.h"
-#include "nvs_flash.h"
-#include "driver/gpio.h"
-#include "sdmmc_cmd.h"
-#include "driver/sdmmc_host.h"
-#include "esp_vfs_fat.h"  // FAT filesystem functions
+#include "esp_heap_caps.h"
+#include "esp_psram.h"
+//#include "camera_pin.h"
 
-#define TAG "ESP_CAM"
+//sd card init
+#include "SD.h"
 
-// Camera pin definitions
-#define PWDN_GPIO_NUM     -1
-#define RESET_GPIO_NUM    -1
-#define XCLK_GPIO_NUM     21
-#define SIOD_GPIO_NUM     26
-#define SIOC_GPIO_NUM     27
-#define Y9_GPIO_NUM       35
-#define Y8_GPIO_NUM       34
-#define Y7_GPIO_NUM       39
-#define Y6_GPIO_NUM       36
-#define Y5_GPIO_NUM       19
-#define Y4_GPIO_NUM       18
-#define Y3_GPIO_NUM       5
-#define Y2_GPIO_NUM       4
-#define VSYNC_GPIO_NUM    25
-#define HREF_GPIO_NUM     23
-#define PCLK_GPIO_NUM     22
+static const char *MAIN_TAG = "MAIN";
 
-static void init_camera() {
-    camera_config_t config = {
+static bool auto_jpeg_support = false; // whether the camera sensor support compression or JPEG encode
+static const char *TAG = "example:take_picture";
+
+
+static esp_err_t init_camera(uint32_t xclk_freq_hz, pixformat_t pixel_format, framesize_t frame_size, uint8_t fb_count)
+{
+    camera_config_t camera_config = {
+        .pin_pwdn = -1,
+        .pin_reset = -1,
+        .pin_xclk = 21,
+        .pin_sscb_sda = 26,
+        .pin_sscb_scl = 27,
+
+        .pin_d7 = 35,
+        .pin_d6 = 34,
+        .pin_d5 = 39,
+        .pin_d4 = 36,
+        .pin_d3 = 19,
+        .pin_d2 = 18,
+        .pin_d1 = 5,
+        .pin_d0 = 4,
+        .pin_vsync = 25,
+        .pin_href = 23,
+        .pin_pclk = 22,
+
+        // EXPERIMENTAL: Set to 16MHz on ESP32-S2 or ESP32-S3 to enable EDMA mode.
+        .xclk_freq_hz = xclk_freq_hz,
+        .ledc_timer = LEDC_TIMER_0, // This is only valid on ESP32/ESP32-S2. ESP32-S3 use LCD_CAM interface.
         .ledc_channel = LEDC_CHANNEL_0,
-        .ledc_timer = LEDC_TIMER_0,
-        .pin_d0 = Y2_GPIO_NUM,
-        .pin_d1 = Y3_GPIO_NUM,
-        .pin_d2 = Y4_GPIO_NUM,
-        .pin_d3 = Y5_GPIO_NUM,
-        .pin_d4 = Y6_GPIO_NUM,
-        .pin_d5 = Y7_GPIO_NUM,
-        .pin_d6 = Y8_GPIO_NUM,
-        .pin_d7 = Y9_GPIO_NUM,
-        .pin_xclk = XCLK_GPIO_NUM,
-        .pin_pclk = PCLK_GPIO_NUM,
-        .pin_vsync = VSYNC_GPIO_NUM,
-        .pin_href = HREF_GPIO_NUM,
-        .pin_sccb_sda = SIOD_GPIO_NUM,
-        .pin_sccb_scl = SIOC_GPIO_NUM,
-        .pin_pwdn = PWDN_GPIO_NUM,
-        .pin_reset = RESET_GPIO_NUM,
-        .xclk_freq_hz = 20000000,
-        .pixel_format = PIXFORMAT_JPEG,
-        .grab_mode = CAMERA_GRAB_LATEST,
-        .frame_size = FRAMESIZE_UXGA,
-        .jpeg_quality = 10,
-        .fb_count = 1
-    };
-    
-    if (esp_camera_init(&config) != ESP_OK) {
-        ESP_LOGE(TAG, "Camera initialization failed");
-    } else {
-        ESP_LOGI(TAG, "Camera initialized successfully");
-    }
-}
 
-static void init_sd_card() {
-    ESP_LOGI(TAG, "Initializing SD card...");
-    
-    sdmmc_host_t host = SDMMC_HOST_DEFAULT();
-    sdmmc_slot_config_t slot_config = SDMMC_SLOT_CONFIG_DEFAULT();
-    
-    esp_vfs_fat_mount_config_t mount_config = {
-        .format_if_mount_failed = false,
-        .max_files = 5,
-        .allocation_unit_size = 16 * 1024
+        .pixel_format = pixel_format, // YUV422,GRAYSCALE,RGB565,JPEG
+        .frame_size = frame_size,    // QQVGA-UXGA, sizes above QVGA are not been recommended when not JPEG format.
+
+        .jpeg_quality = 30, // 0-63, used only with JPEG format.
+        .fb_count = fb_count,       // For ESP32/ESP32-S2, if more than one, i2s runs in continuous mode.
+        .grab_mode = CAMERA_GRAB_WHEN_EMPTY,
+        .fb_location = CAMERA_FB_IN_DRAM
     };
-    
-    sdmmc_card_t *card;
-    esp_err_t ret = esp_vfs_fat_sdmmc_mount("/sdcard", &host, &slot_config, &mount_config, &card);
+
+    // initialize the camera sensor
+    esp_err_t ret = esp_camera_init(&camera_config);
     if (ret != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to mount SD card (%s)", esp_err_to_name(ret));
-        return;
+        return ret;
     }
-    ESP_LOGI(TAG, "SD card mounted successfully");
+
+    // Get the sensor object, and then use some of its functions to adjust the parameters when taking a photo.
+    // Note: Do not call functions that set resolution, set picture format and PLL clock,
+    // If you need to reset the appeal parameters, please reinitialize the sensor.
+    sensor_t *s = esp_camera_sensor_get();
+    s->set_vflip(s, 1); // flip it back
+    // initial sensors are flipped vertically and colors are a bit saturated
+    if (s->id.PID == OV3660_PID) {
+        s->set_brightness(s, 1); // up the blightness just a bit
+        s->set_saturation(s, -2); // lower the saturation
+    }
+
+    if (s->id.PID == OV3660_PID || s->id.PID == OV2640_PID) {
+        s->set_vflip(s, 1); // flip it back
+    } else if (s->id.PID == GC0308_PID) {
+        s->set_hmirror(s, 0);
+    } else if (s->id.PID == GC032A_PID) {
+        s->set_vflip(s, 1);
+    }
+
+    // Get the basic information of the sensor.
+    camera_sensor_info_t *s_info = esp_camera_sensor_get_info(&(s->id));
+
+    if (ESP_OK == ret && PIXFORMAT_JPEG == pixel_format && s_info->support_jpeg == true) {
+        auto_jpeg_support = true;
+    }
+
+    return ret;
 }
 
-static void capture_and_save_photo() {
-    camera_fb_t *fb = esp_camera_fb_get();
-    if (!fb) {
-        ESP_LOGE(TAG, "Camera capture failed");
+void app_main()
+{
+    if (ESP_OK != init_camera(10 * 1000000, PIXFORMAT_JPEG, FRAMESIZE_QVGA, 1)) {
+        ESP_LOGE(TAG, "init camrea sensor fail");
         return;
     }
+
     
-    char path[50];
-    sprintf(path, "/sdcard/photo_%ld.jpg", esp_log_timestamp());
-    FILE *file = fopen(path, "wb");
-    if (file) {
-        fwrite(fb->buf, 1, fb->len, file);
-        fclose(file);
-        ESP_LOGI(TAG, "Saved photo to %s", path);
-    } else {
-        ESP_LOGE(TAG, "Failed to open file for writing");
-    }
-    esp_camera_fb_return(fb);
-}
 
-void app_main() {
-    nvs_flash_init();
-    init_camera();
-    init_sd_card();
-    while (1) {
-        capture_and_save_photo();
-        vTaskDelay(10000 / portTICK_PERIOD_MS);
-    }
+    // take a picture every two seconds and print the size of the picture.
+    //while (1) {
+
+        ESP_LOGI(MAIN_TAG, "Mounting SD Card...");
+        mount_sd_card();
+        vTaskDelay(5000 / portTICK_PERIOD_MS);
+
+        ESP_LOGI(TAG, "Taking picture...");
+        camera_fb_t *pic = esp_camera_fb_get();
+
+        ESP_LOGI(MAIN_TAG, "Checking SD card files...");
+    list_files_on_sd();
+    vTaskDelay(5000 / portTICK_PERIOD_MS);
+
+
+        if (pic) {
+            // use pic->buf to access the image
+            ESP_LOGI(TAG, "Picture taken! Its size was: %zu bytes", pic->len);
+            // To enable the frame buffer can be reused again.
+            // Note: If you don't call fb_return(), the next time you call fb_get() you may get
+            // an error "Failed to get the frame on time!"because there is no frame buffer space available.
+
+            FILE *testFile = fopen("/sdcard/test.txt", "w");
+            if (testFile) {
+                fprintf(testFile, "SD Card Write Test\n");
+                fclose(testFile);
+                ESP_LOGI(TAG, "SD Card write test successful");
+            } else {
+                ESP_LOGE(TAG, "SD Card is not writable!");
+            }
+
+            vTaskDelay(pdMS_TO_TICKS(2000));
+
+            char path[50];
+            sprintf(path, "/sdcard/photo_%ld.jpg", esp_log_timestamp());  // Corrected file path
+            ESP_LOGI(TAG, "Opening file: %s", path);
+            
+            DIR* dir = opendir("/sdcard");
+            if (!dir) {
+                ESP_LOGE(TAG, "SD Card is NOT accessible!");
+            } else {
+                ESP_LOGI(TAG, "SD Card is accessible.");
+                closedir(dir);
+            }
+
+
+            vTaskDelay(pdMS_TO_TICKS(2000));
+
+            FILE *file = fopen(path, "wb+");
+            if (file) {
+                fwrite(pic->buf, 1, pic->len, file);
+                fclose(file);
+                ESP_LOGI(TAG, "Saved photo to %s", path);
+            } else {
+                ESP_LOGE(TAG, "Failed to open file for writing");
+            }
+
+            
+
+            esp_camera_fb_return(pic);
+
+
+
+        }
+
+        vTaskDelay(pdMS_TO_TICKS(10000));
+
+
+        ESP_LOGI(MAIN_TAG, "Unmounting SD Card...");
+        vTaskDelay(5000 / portTICK_PERIOD_MS);
+        unmount_sd_card();
+    //}
+
+    
 }
