@@ -50,7 +50,7 @@ static esp_err_t init_camera(uint32_t xclk_freq_hz, pixformat_t pixel_format, fr
         .pixel_format = pixel_format, // YUV422,GRAYSCALE,RGB565,JPEG
         .frame_size = frame_size,    // QQVGA-UXGA, sizes above QVGA are not been recommended when not JPEG format.
 
-        .jpeg_quality = 30, // 0-63, used only with JPEG format.
+        .jpeg_quality = 10, // 0-63, used only with JPEG format.
         .fb_count = fb_count,       // For ESP32/ESP32-S2, if more than one, i2s runs in continuous mode.
         .grab_mode = CAMERA_GRAB_WHEN_EMPTY,
         .fb_location = CAMERA_FB_IN_DRAM
@@ -93,10 +93,12 @@ static esp_err_t init_camera(uint32_t xclk_freq_hz, pixformat_t pixel_format, fr
 
 void app_main()
 {
-    if (ESP_OK != init_camera(10 * 1000000, PIXFORMAT_JPEG, FRAMESIZE_QVGA, 1)) {
+    if (ESP_OK != init_camera(10 * 1000000, PIXFORMAT_JPEG, FRAMESIZE_VGA, 2)) {
         ESP_LOGE(TAG, "init camrea sensor fail");
         return;
     }
+
+    clear_sd_card();
 
     
 
@@ -134,7 +136,7 @@ void app_main()
             vTaskDelay(pdMS_TO_TICKS(2000));
 
             char path[50];
-            sprintf(path, "/sdcard/photo_%ld.jpg", esp_log_timestamp());  // Corrected file path
+            sprintf(path, "/sdcard/photo.jpg");;  // Corrected file path
             ESP_LOGI(TAG, "Opening file: %s", path);
             
             DIR* dir = opendir("/sdcard");
@@ -150,9 +152,14 @@ void app_main()
 
             FILE *file = fopen(path, "wb+");
             if (file) {
-                fwrite(pic->buf, 1, pic->len, file);
+                size_t written = fwrite(pic->buf, 1, pic->len, file);
                 fclose(file);
-                ESP_LOGI(TAG, "Saved photo to %s", path);
+
+                if (written == pic->len) {
+                    ESP_LOGI(TAG, "Saved photo to %s", path);
+                } else {
+                    ESP_LOGE(TAG, "Incomplete write: only %zu of %zu bytes written", written, pic->len);
+                }
             } else {
                 ESP_LOGE(TAG, "Failed to open file for writing");
             }
