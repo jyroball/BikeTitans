@@ -5,7 +5,8 @@
 ### Backend
 ```sh
 cd backend
-source setup_backend.sh
+python -m venv ENV
+pip install -r requirements.txt
 ```
 
 ### Hardware
