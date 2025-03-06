@@ -56,29 +56,71 @@ static esp_err_t init_camera(uint32_t xclk_freq_hz, pixformat_t pixel_format, fr
         .fb_location = CAMERA_FB_IN_DRAM
     };
 
-    // initialize the camera sensor
+    // // initialize the camera sensor
+    // esp_err_t ret = esp_camera_init(&camera_config);
+    // if (ret != ESP_OK) {
+    //     return ret;
+    // }
+
+    // // Get the sensor object, and then use some of its functions to adjust the parameters when taking a photo.
+    // // Note: Do not call functions that set resolution, set picture format and PLL clock,
+    // // If you need to reset the appeal parameters, please reinitialize the sensor.
+    // sensor_t *s = esp_camera_sensor_get();
+    // s->set_vflip(s, 1); // flip it back
+    // // initial sensors are flipped vertically and colors are a bit saturated
+    // if (s->id.PID == OV3660_PID) {
+    //     s->set_brightness(s, 1); // up the blightness just a bit
+    //     s->set_saturation(s, -2); // lower the saturation
+    // }
+
+    // if (s->id.PID == OV3660_PID || s->id.PID == OV2640_PID) {
+    //     s->set_vflip(s, 1); // flip it back
+    // } else if (s->id.PID == GC0308_PID) {
+    //     s->set_hmirror(s, 0);
+    // } else if (s->id.PID == GC032A_PID) {
+    //     s->set_vflip(s, 1);
+    // }
+
+    // // Get the basic information of the sensor.
+    // camera_sensor_info_t *s_info = esp_camera_sensor_get_info(&(s->id));
+
+    // if (ESP_OK == ret && PIXFORMAT_JPEG == pixel_format && s_info->support_jpeg == true) {
+    //     auto_jpeg_support = true;
+    // }
+
+    // return ret;
+
     esp_err_t ret = esp_camera_init(&camera_config);
     if (ret != ESP_OK) {
         return ret;
     }
 
-    // Get the sensor object, and then use some of its functions to adjust the parameters when taking a photo.
-    // Note: Do not call functions that set resolution, set picture format and PLL clock,
-    // If you need to reset the appeal parameters, please reinitialize the sensor.
     sensor_t *s = esp_camera_sensor_get();
-    s->set_vflip(s, 1); // flip it back
-    // initial sensors are flipped vertically and colors are a bit saturated
+
+    // Apply recommended settings
+    s->set_brightness(s, 1);  // Increase brightness
+    s->set_saturation(s, -3); // Decrease saturation
+
+    s->set_gain_ctrl(s, 0);
+    s->set_exposure_ctrl(s, 0);
+
+    // Try disabling AWB and setting a fixed mode
+    s->set_whitebal(s, 0);  // Disable auto white balance
+    s->set_awb_gain(s, 1);  // Enable manual white balance gain control
+    //s->set_manual_gain(s, 1.2, 1.0, 1.4); // Adjust red, green, and blue gains
+    //you can also change these too, needs more experimentation xd
+    //s->set_awb_gains(s, 1.2, 1.0, 1.4); // Adjust red, green, and blue gains manually
+    s->set_wb_mode(s, 0);   // Try different modes (0-4), 2 is for daylight
+    s->set_contrast(s, 2);    // Improve contrast
+
+    // Additional sensor-specific settings
     if (s->id.PID == OV3660_PID) {
-        s->set_brightness(s, 1); // up the blightness just a bit
-        s->set_saturation(s, -2); // lower the saturation
+        s->set_vflip(s, 1);     // Flip the image vertically
     }
 
-    if (s->id.PID == OV3660_PID || s->id.PID == OV2640_PID) {
-        s->set_vflip(s, 1); // flip it back
-    } else if (s->id.PID == GC0308_PID) {
-        s->set_hmirror(s, 0);
-    } else if (s->id.PID == GC032A_PID) {
-        s->set_vflip(s, 1);
+    // Additional sensor-specific settings
+    if (s->id.PID == OV3660_PID) {
+        s->set_vflip(s, 1);     // Flip the image vertically
     }
 
     // Get the basic information of the sensor.
@@ -93,7 +135,7 @@ static esp_err_t init_camera(uint32_t xclk_freq_hz, pixformat_t pixel_format, fr
 
 void app_main()
 {
-    if (ESP_OK != init_camera(10 * 1000000, PIXFORMAT_JPEG, FRAMESIZE_VGA, 2)) {
+    if (ESP_OK != init_camera(20 * 1000000, PIXFORMAT_JPEG, FRAMESIZE_VGA, 2)) {
         ESP_LOGE(TAG, "init camrea sensor fail");
         return;
     }
