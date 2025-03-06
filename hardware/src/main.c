@@ -10,7 +10,6 @@
 #include "esp_camera.h"
 #include "esp_heap_caps.h"
 #include "esp_psram.h"
-//#include "camera_pin.h"
 
 //sd card init
 #include "SD.h"
