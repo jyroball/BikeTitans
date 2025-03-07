@@ -5,3 +5,5 @@ playwright
 requests
 opencv-python
 pandas
+torch
+torchsummary
