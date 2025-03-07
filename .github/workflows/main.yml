@@ -29,4 +29,5 @@ jobs:
         run: ENV/bin/python input.py
 
       - name: Print Changed Files
-        run: git status --short
+        run: echo "Listing all files in backend/gdrive_images/:"
+          ls -R backend/gdrive_images/
