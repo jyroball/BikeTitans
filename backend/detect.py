@@ -44,7 +44,7 @@ if __name__ == "__main__":
     read_text_file(file_path)
 
     # extract total number of slots from image name
-    jpg_file = find_jpg_file(".")
+    jpg_file = find_jpg_file("./gdrive_images")
     if jpg_file:
         extracted_number = extract_number_from_filename(jpg_file)
         # print(f"Match: {extracted_number}")
