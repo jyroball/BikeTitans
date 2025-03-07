@@ -1,5 +1,6 @@
-import json
+import io
 import os
+import json
 
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
@@ -7,7 +8,7 @@ from googleapiclient.http import MediaIoBaseDownload
 
 # Constants
 FOLDER_ID = "1tYyTa-e2eDs4cfoYDbhEDbZuCiJybdJc"
-DOWNLOAD_DIR = "downloaded_files"
+DOWNLOAD_DIR = "gdrive_images"
 
 # Load credentials from environment variable
 service_account_info = json.loads(os.getenv("GDRIVE_CREDENTIALS"))
