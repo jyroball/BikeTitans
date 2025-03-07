@@ -41,6 +41,7 @@ jobs:
             if [ -f "$label_file" ]; then
               mv "$label_file" "$LABEL_DIR/"
             fi
+            rm -rf runs/detect/exp
           done
 
       - name: Parse Images & Labels
