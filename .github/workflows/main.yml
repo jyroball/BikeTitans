@@ -22,12 +22,22 @@ jobs:
           python -m venv ENV
           ENV/bin/pip install -r requirements.txt
 
-      - name: Run input.py with Secret
+      - name: Download Images from GDrive
         working-directory: backend
         env:
           GDRIVE_CRED: ${{ secrets.GDRIVE_CRED }}
         run: ENV/bin/python input.py
 
       - name: Print Changed Files
-        run: echo "Listing all files in backend/gdrive_images/:"
+        run: |
           ls -R backend/gdrive_images/
+
+      - name: Parse Images & Labels
+        working-directory: backend
+        run: |
+          ENV/bin/python parser.py
+          git config --global user.name "therealsamyak"
+          git config --global user.email "therealsamyak@gmail.com"
+          git add ../frontend
+          git commit -m "Update frontend based on parser.py changes"
+          git push
