@@ -1,0 +1,9 @@
+# Path to the training and validation images
+train: ../dataset4/images/train
+val: ../dataset4/images/val
+
+# Number of classes
+nc: 2
+
+# Class names (indexed from 0 to n-1)
+names: ['empty', 'occupied']

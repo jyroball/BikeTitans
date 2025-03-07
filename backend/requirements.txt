@@ -1,3 +1,5 @@
 YOLOv5
 opencv-python
 pandas
+torch
+torchsummary

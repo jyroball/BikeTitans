@@ -1,0 +1,13 @@
+train: ../dataset5/train/images
+val: ../dataset5/valid/images
+test: ../dataset5/test/images
+
+nc: 1
+names: ['Bicycle']
+
+roboflow:
+  workspace: politecnico-di-torino-lomut
+  project: smart-bike-rack-pou2z
+  version: 11
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/politecnico-di-torino-lomut/smart-bike-rack-pou2z/dataset/11
