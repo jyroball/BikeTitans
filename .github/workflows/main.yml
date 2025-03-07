@@ -29,7 +29,7 @@ jobs:
         run: ENV/bin/python input.py
 
       - name: Print Changed Files
-        run: echo "Listing all files in backend/gdrive_images/:"
+        run: |
           ls -R backend/gdrive_images/
 
       - name: Parse Images & Labels
