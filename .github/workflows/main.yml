@@ -28,9 +28,20 @@ jobs:
           GDRIVE_CRED: ${{ secrets.GDRIVE_CRED }}
         run: ENV/bin/python input.py
 
-      - name: Print Changed Files
+      - name: Run YOLOv5 Inference on Images
+        working-directory: backend/yolov5
         run: |
-          ls -R backend/gdrive_images/
+
+          IMAGE_DIR="../images/gdrive_images"
+          LABEL_DIR="../images/label_folder"
+
+          for img in "$IMAGE_DIR"/*.jpg; do
+            python3 detect.py --source "$img" --weights ../best.pt --img 640 --device cpu --save-txt --conf-thres 0.45
+            label_file="runs/detect/exp/labels/$(basename "$img" .jpg).txt"
+            if [ -f "$label_file" ]; then
+              mv "$label_file" "$LABEL_DIR/"
+            fi
+          done
 
       - name: Parse Images & Labels
         working-directory: backend
