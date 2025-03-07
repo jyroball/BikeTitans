@@ -147,7 +147,7 @@ void app_main()
     vTaskDelay(5000 / portTICK_PERIOD_MS);
     ESP_LOGI(MAIN_TAG, "Time Synced!");
 
-    if (ESP_OK != init_camera(10 * 1000000, PIXFORMAT_JPEG, FRAMESIZE_VGA, 2)) {
+    if (ESP_OK != init_camera(10 * 1000000, PIXFORMAT_JPEG, FRAMESIZE_VGA, 1)) {
         ESP_LOGE(MAIN_TAG, "init camrea sensor fail");
         return;
     }
@@ -219,7 +219,7 @@ void app_main()
 
         vTaskDelay(pdMS_TO_TICKS(2000));
 
-        ESP_LOGI(MAIN_TAG, "Uploading (Overwriting) file on GDrive...");
+        // ESP_LOGI(MAIN_TAG, "Uploading (Overwriting) file on GDrive...");
         upload_file();
 
 
