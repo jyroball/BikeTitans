@@ -26,11 +26,18 @@ def find_jpg_file(directory):
     return None
 
 def extract_number_from_filename(filename):
-    match = re.search(r"iamge_(\d+)\.JPG", filename)
-    # print(f"Match: {match}")
+    match = re.search(r"([^_]+)_(\d+)\.JPG", filename)
     if match:
-        return int(match.group(1))
-    return None
+        part_before_underscore = match.group(1)  
+        number_after_underscore = match.group(2)
+        try:
+            return int(number_after_underscore)
+        except ValueError:
+            print(f"Error: '{number_after_underscore}' is not a valid number")
+            return None
+    else:
+        print(f"Filename '{filename}' doesn't match the expected pattern.")
+        return None
 
 if __name__ == "__main__":
     file_path = "detect.txt"
