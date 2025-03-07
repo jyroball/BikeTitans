@@ -1,0 +1,30 @@
+name: Run Backend on Button Push
+
+on:
+  workflow_dispatch: # This makes the action only trigger manually from GitHub UI button push
+
+jobs:
+  run-backend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Setup Virtual Environment
+        run: |
+          cd backend
+          python -m venv ENV
+          source ENV/bin/activate
+          pip install -r requirements.txt
+        shell: bash
+
+      - name: run script 1
+        run: |
+          python3 main.py
+        shell: bash
