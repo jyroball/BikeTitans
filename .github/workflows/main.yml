@@ -40,4 +40,4 @@ jobs:
           git config --global user.email "therealsamyak@gmail.com"
           git add ../frontend
           git commit -m "Update frontend based on parser.py changes"
-          git push origin main
+          git push
