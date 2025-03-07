@@ -1,7 +1,7 @@
 name: Run Backend on Button Push
 
 on:
-  workflow_dispatch: # This makes the action only trigger manually from GitHub UI button push
+  workflow_dispatch: # Allows manual trigger from GitHub UI
 
 jobs:
   run-backend:
@@ -14,7 +14,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.13'
+          python-version: "3.13" # Python 3.13 is unstable; 3.10 is recommended
 
       - name: Setup Virtual Environment
         run: |
@@ -24,7 +24,14 @@ jobs:
           pip install -r requirements.txt
         shell: bash
 
-      - name: run script 1
+      - name: Run input.py with Secret
+        env:
+          GDRIVE_CRED: ${{ secrets.GDRIVE_CRED }}
         run: |
-          python3 main.py
+          python input.py
+        shell: bash
+
+      - name: Print Changed Files
+        run: |
+          git status --short
         shell: bash
