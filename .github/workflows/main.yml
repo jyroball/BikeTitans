@@ -35,6 +35,8 @@ jobs:
           IMAGE_DIR="../images/gdrive_images"
           LABEL_DIR="../images/label_folder"
 
+          pip install -r requirements.txt
+          
           for img in "$IMAGE_DIR"/*.jpg; do
             python3 detect.py --source "$img" --weights ../best.pt --img 640 --device cpu --save-txt --conf-thres 0.45
             label_file="runs/detect/exp/labels/$(basename "$img" .jpg).txt"
