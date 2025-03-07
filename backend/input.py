@@ -8,7 +8,7 @@ from googleapiclient.http import MediaIoBaseDownload
 
 # Constants
 FOLDER_ID = "1tYyTa-e2eDs4cfoYDbhEDbZuCiJybdJc"
-DOWNLOAD_DIR = "gdrive_images"
+DOWNLOAD_DIR = "images/gdrive_images"
 
 # Load credentials from environment variable
 service_account_info = json.loads(os.getenv("GDRIVE_CRED"))
