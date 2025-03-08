@@ -50,6 +50,11 @@ echo "Running Parser"
 echo "------------------"
 python3 parser.py
 
+echo "------------------"
+echo "Final Output"
+echo "------------------"
+cat ../frontend/static/output.json
+
 # Set up git configuration
 git config --global user.name "GitHub Actions"
 git config --global user.email "github-actions@github.com"
