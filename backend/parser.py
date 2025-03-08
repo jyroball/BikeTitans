@@ -42,10 +42,10 @@ def find_jpg_file(txt_file):
 
 # Function to extract the total number of slots from the image filename
 def extract_number_from_filename(filename):
-    match = re.search(r"([^_]+)_(\d+)\.jpg", filename)
+    match = re.search(r"([a-zA-Z_]+)_(\d+)\.(jpg|JPG)", filename)
     if match:
-        part_before_underscore = match.group(1)  # Title
-        number_after_underscore = match.group(2)  # Total slots number
+        part_before_underscore = match.group(1)  # Title (before '_')
+        number_after_underscore = match.group(2)  # Total slots number (after '_')
         try:
             return part_before_underscore, int(number_after_underscore)
         except ValueError:

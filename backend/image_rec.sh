@@ -17,8 +17,8 @@ echo "------------------"
 CURRENT_DIR=$(pwd)
 
 # Define directories for images and labels using absolute paths
-IMAGE_DIR="$CURRENT_DIR/../images/gdrive_images"
-LABEL_DIR="$CURRENT_DIR/../images/label_folder"
+IMAGE_DIR="$CURRENT_DIR/images/gdrive_images"
+LABEL_DIR="$CURRENT_DIR/images/label_folder"
 
 mkdir -p "$IMAGE_DIR"
 mkdir -p "$LABEL_DIR"
