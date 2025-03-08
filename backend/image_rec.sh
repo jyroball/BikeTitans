@@ -18,7 +18,7 @@ cd yolov5
 pip install -r requirements.txt
 
 # Iterate over all .jpg images in the IMAGE_DIR
-for img in "$IMAGE_DIR"/*.jpg; do
+for img in "$IMAGE_DIR"/*.JPG; do
   # Run the YOLOv5 detection script on the image
   python3 detect.py --source "$img" --weights ../best.pt --img 640 --device cpu --save-txt --conf-thres 0.45
 
