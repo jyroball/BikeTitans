@@ -5,6 +5,9 @@ python3 -m pip install --upgrade pip
 pip3 install -r requirements.txt
 
 # Download images from Google Drive
+echo "------------------"
+echo "Downloading Uploaded Images"
+echo "------------------"
 python3 input.py
 
 # Define directories for images and labels
@@ -12,6 +15,10 @@ IMAGE_DIR="../images/gdrive_images"
 LABEL_DIR="../images/label_folder"
 
 # Go to the yolov5 directory for inference
+echo "------------------"
+echo "YOLOv5 Model Recognition"
+echo "------------------"
+
 rm -rf yolov5
 git clone https://github.com/ultralytics/yolov5
 cd yolov5
@@ -38,6 +45,9 @@ done
 cd ..
 
 # Parse the images and labels with your custom parser
+echo "------------------"
+echo "Running Parser"
+echo "------------------"
 python3 parser.py
 
 # Set up git configuration
