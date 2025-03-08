@@ -3,8 +3,8 @@ import os
 import re
 
 # Hardcoded folder names
-image_folder = "./images/gdrive_images"
-txt_folder = "./images/label_folder"
+image_folder = "images/gdrive_images"
+txt_folder = "images/label_folder"
 output_folder = "../frontend/static"
 
 
