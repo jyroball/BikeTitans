@@ -14,6 +14,9 @@ python3 input.py
 IMAGE_DIR="../images/gdrive_images"
 LABEL_DIR="../images/label_folder"
 
+mkdir -p "$IMAGE_DIR"
+mkdir -p "$LABEL_DIR"
+
 # Go to the yolov5 directory for inference
 echo "------------------"
 echo "YOLOv5 Model Recognition"
