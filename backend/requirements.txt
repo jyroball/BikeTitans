@@ -1,9 +1,4 @@
 aiohttp
 google-auth
 google-api-python-client
-playwright
 requests
-opencv-python
-pandas
-torch
-torchsummary
