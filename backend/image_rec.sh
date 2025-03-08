@@ -11,11 +11,20 @@ echo "------------------"
 python3 input.py
 
 # Define directories for images and labels
-IMAGE_DIR="../images/gdrive_images"
-LABEL_DIR="../images/label_folder"
+echo "------------------"
+echo "Create Folders"
+echo "------------------"
+CURRENT_DIR=$(pwd)
+
+# Define directories for images and labels using absolute paths
+IMAGE_DIR="$CURRENT_DIR/images/gdrive_images"
+LABEL_DIR="$CURRENT_DIR/images/label_folder"
 
 mkdir -p "$IMAGE_DIR"
 mkdir -p "$LABEL_DIR"
+
+echo "Image directory: $IMAGE_DIR"
+echo "Label directory: $LABEL_DIR"
 
 # Go to the yolov5 directory for inference
 echo "------------------"
