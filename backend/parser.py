@@ -26,10 +26,17 @@ def read_text_file(file_path):
 def find_jpg_file(txt_file):
     filename_without_extension = os.path.splitext(txt_file)[0]
     jpg_file = f"{filename_without_extension}.jpg"
+    jpg_file_upper = f"{filename_without_extension}.JPG" 
+
+    # Log the files being checked
+    print(f"Looking for: {jpg_file} or {jpg_file_upper}")
+
     if os.path.exists(os.path.join(image_folder, jpg_file)):
         return jpg_file
+    elif os.path.exists(os.path.join(image_folder, jpg_file_upper)):
+        return jpg_file_upper
     else:
-        print(f"JPG file '{jpg_file}' not found.")
+        print(f"JPG file '{jpg_file}' or '{jpg_file_upper}' not found.")
         return None
 
 
