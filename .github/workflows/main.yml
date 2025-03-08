@@ -21,4 +21,5 @@ jobs:
           GDRIVE_CRED: ${{ secrets.GDRIVE_CRED }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          cd backend
           source image_rec.sh
