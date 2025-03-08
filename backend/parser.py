@@ -3,8 +3,8 @@ import os
 import re
 
 # Hardcoded folder names
-image_folder = "./images/gdrive_images"
-txt_folder = "./images/label_folder"
+image_folder = "images/gdrive_images"
+txt_folder = "images/label_folder"
 output_folder = "../frontend/static"
 
 
@@ -26,19 +26,26 @@ def read_text_file(file_path):
 def find_jpg_file(txt_file):
     filename_without_extension = os.path.splitext(txt_file)[0]
     jpg_file = f"{filename_without_extension}.jpg"
+    jpg_file_upper = f"{filename_without_extension}.JPG" 
+
+    # Log the files being checked
+    print(f"Looking for: {jpg_file} or {jpg_file_upper}")
+
     if os.path.exists(os.path.join(image_folder, jpg_file)):
         return jpg_file
+    elif os.path.exists(os.path.join(image_folder, jpg_file_upper)):
+        return jpg_file_upper
     else:
-        print(f"JPG file '{jpg_file}' not found.")
+        print(f"JPG file '{jpg_file}' or '{jpg_file_upper}' not found.")
         return None
 
 
 # Function to extract the total number of slots from the image filename
 def extract_number_from_filename(filename):
-    match = re.search(r"([^_]+)_(\d+)\.jpg", filename)
+    match = re.search(r"([a-zA-Z_]+)_(\d+)\.(jpg|JPG)", filename)
     if match:
-        part_before_underscore = match.group(1)  # Title
-        number_after_underscore = match.group(2)  # Total slots number
+        part_before_underscore = match.group(1)  # Title (before '_')
+        number_after_underscore = match.group(2)  # Total slots number (after '_')
         try:
             return part_before_underscore, int(number_after_underscore)
         except ValueError:

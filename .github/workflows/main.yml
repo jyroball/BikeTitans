@@ -16,42 +16,10 @@ jobs:
         with:
           python-version: "3.13"
 
-      - name: Install Dependencies
-        working-directory: backend
-        run: |
-          python -m venv ENV
-          ENV/bin/pip install -r requirements.txt
-
-      - name: Download Images from GDrive
-        working-directory: backend
+      - name: Run Backend Script
         env:
           GDRIVE_CRED: ${{ secrets.GDRIVE_CRED }}
-        run: ENV/bin/python input.py
-
-      - name: Run YOLOv5 Inference on Images
-        working-directory: backend/yolov5
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-
-          IMAGE_DIR="../images/gdrive_images"
-          LABEL_DIR="../images/label_folder"
-
-          ENV/bin/pip install -r requirements.txt
-
-          for img in "$IMAGE_DIR"/*.jpg; do
-            ENV/bin/python detect.py --source "$img" --weights ../best.pt --img 640 --device cpu --save-txt --conf-thres 0.45
-            label_file="runs/detect/exp/labels/$(basename "$img" .jpg).txt"
-            if [ -f "$label_file" ]; then
-              mv "$label_file" "$LABEL_DIR/"
-            fi
-            rm -rf runs/detect/exp
-          done
-
-      - name: Parse Images & Labels
-        working-directory: backend
-        run: |
-          ENV/bin/python parser.py
-          git config --global user.name "therealsamyak"
-          git config --global user.email "therealsamyak@gmail.com"
-          git add ../frontend
-          git commit -m "Update frontend based on parser.py changes"
-          git push
+          cd backend
+          source image_rec.sh
