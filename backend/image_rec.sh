@@ -26,15 +26,26 @@ pip install -r requirements.txt
 
 # Iterate over all .jpg images in the IMAGE_DIR
 for img in "$IMAGE_DIR"/*.JPG; do
+  # Get just the filename without the path
+  img_filename=$(basename "$img")
+  
   # Run the YOLOv5 detection script on the image
   python3 detect.py --source "$img" --weights ../best.pt --img 640 --device cpu --save-txt --conf-thres 0.45
 
-  # Define the label file path
-  label_file="runs/detect/exp/labels/$(basename "$img" .jpg).txt"
-
-  # If the label file exists, move it to the LABEL_DIR
+  # Replace .JPG with .txt to get the label filename
+  label_filename="${img_filename%.JPG}.txt"
+  
+  # Define the full path to the label file
+  label_file="runs/detect/exp/labels/$label_filename"
+  
   if [ -f "$label_file" ]; then
+    echo "Moving $label_file to $LABEL_DIR/"
     mv "$label_file" "$LABEL_DIR/"
+  else
+    echo "Label file not found: $label_file"
+    # Debug: List files in the labels directory
+    echo "Files in labels directory:"
+    ls -la runs/detect/exp/labels/
   fi
 
   # Clean up the temporary folder
