@@ -1,6 +1,14 @@
 {
-    "iamge": {
-        "total_slot_number": 12,
-        "open_slots": 8
+    "bro": {
+        "total_slot_number": 13,
+        "open_slots": 12
+    },
+    "bruhhhh": {
+        "total_slot_number": 4,
+        "open_slots": 2
+    },
+    "bruh": {
+        "total_slot_number": 11,
+        "open_slots": 9
     }
 }
