@@ -94,3 +94,60 @@ esp_err_t init_camera(uint32_t xclk_freq_hz, pixformat_t pixel_format, framesize
 
     return ret;
 }
+
+void take_pic() {
+    //Get picture
+    ESP_LOGI(CAM_TAG, "Taking picture...");
+    camera_fb_t *pic = esp_camera_fb_get();
+
+    //Check if pic valid
+    if (pic)
+    {
+        //Log Pic Taken
+        ESP_LOGI(CAM_TAG, "Picture taken, size: %zu bytes", pic->len);
+        vTaskDelay(pdMS_TO_TICKS(2000));
+
+        // get path to save photo to SD CArd
+        char path[50];
+        sprintf(path, "/sdcard/photo.jpg");
+        ESP_LOGI(CAM_TAG, "Opening file: %s", path);
+
+        // Check if sd card is accessivbke
+        DIR *dir = opendir("/sdcard");
+        if (!dir)
+        {
+            ESP_LOGE(CAM_TAG, "SD Card is NOT accessible!");
+        }
+        else
+        {
+            ESP_LOGI(CAM_TAG, "SD Card is accessible.");
+            closedir(dir);
+        }
+
+        vTaskDelay(pdMS_TO_TICKS(2000));
+
+        // save pic taken into sd card
+        FILE *file = fopen(path, "wb+");
+        if (file)
+        {
+            size_t written = fwrite(pic->buf, 1, pic->len, file);
+            fclose(file);
+
+            if (written == pic->len)
+            {
+                ESP_LOGI(CAM_TAG, "Saved photo to %s", path);
+            }
+            else
+            {
+                ESP_LOGE(CAM_TAG, "Incomplete write: only %zu of %zu bytes written", written, pic->len);
+            }
+        }
+        else
+        {
+            ESP_LOGE(CAM_TAG, "Failed to open file for writing");
+        }
+
+        // need to call agin for loop or wont take pic again
+        esp_camera_fb_return(pic);
+    }
+}

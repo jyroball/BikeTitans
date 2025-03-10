@@ -18,7 +18,11 @@
 // Global for JPEG Encode or compression
 static bool auto_jpeg_support = false;
 
+//Tag
+#define CAM_TAG "Cam_Mudule"
+
 // Initialize Camera
 esp_err_t init_camera(uint32_t xclk_freq_hz, pixformat_t pixel_format, framesize_t frame_size, uint8_t fb_count);
 
 //Save Picture
+void take_pic();
