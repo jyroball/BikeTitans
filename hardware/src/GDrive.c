@@ -1,5 +1,10 @@
 #include "GDrive.h"
 
+#define SIZE 12
+#define STRINGIFY(x) #x
+#define TO_STRING(x) STRINGIFY(x)
+#define FILE_NAME "test-image_" TO_STRING(SIZE) ".jpg"
+
 static esp_err_t _http_event_handler(esp_http_client_event_t *evt)
 {
     http_response_t *resp = (http_response_t *)evt->user_data;
@@ -430,7 +435,7 @@ esp_err_t upload_file()
 
     // Create metadata JSON
     cJSON *json_metadata = cJSON_CreateObject();
-    cJSON_AddStringToObject(json_metadata, "name", "test_image.jpg");
+    cJSON_AddStringToObject(json_metadata, "name", FILE_NAME);
     char *metadata_str = cJSON_PrintUnformatted(json_metadata);
     cJSON_Delete(json_metadata);
 
@@ -483,10 +488,10 @@ esp_err_t upload_file()
     }
     snprintf(file_header, file_header_size,
              "--%s\r\n"
-             "Content-Disposition: form-data; name=\"file\"; filename=\"test_image.jpg\"\r\n"
+             "Content-Disposition: form-data; name=\"file\"; filename=\"%s\"\r\n"
              "Content-Type: application/octet-stream\r\n"
              "\r\n",
-             boundary);
+             boundary, FILE_NAME);
 
     // Final boundary
     char *end_boundary = malloc(strlen(boundary) + 10);
