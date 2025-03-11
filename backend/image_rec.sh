@@ -71,10 +71,16 @@ echo "Final Output"
 echo "------------------"
 cat ../frontend/static/output.json
 
-# Commit all changes
-git config --global user.name "GitHub Actions"
-git config --global user.email "github-actions@github.com"
-
-git add ../frontend
-git commit -m "Update frontend based on parser.py changes"
-git push
+# Commit all changes (if any)
+if [[ -n $(git status --porcelain ../frontend) ]]; then
+  echo "Changes detected. Committing..."
+  
+  git config --global user.name "GitHub Actions"
+  git config --global user.email "github-actions@github.com"
+  
+  git add ../frontend
+  git commit -m "Update frontend based on parser.py changes"
+  git push
+else
+  echo "No changes detected. Skipping commit."
+fi
