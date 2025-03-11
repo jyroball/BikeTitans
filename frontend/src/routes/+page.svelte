@@ -64,14 +64,13 @@
 	}
 </script>
 
-// src/routes/+page.svelte
 <svelte:head>
-	<title>Home | YourCompany</title>
+	<title>Home | BikeTitans</title>
 </svelte:head>
 
 <section class="mb-12">
 	<div class="mb-16 text-center">
-		<h1 class="mb-4 text-4xl font-bold">Welcome to YourCompany</h1>
+		<h1 class="mb-4 text-4xl font-bold">Welcome to BikeTitans</h1>
 		<p class="mx-auto max-w-2xl text-xl text-gray-600">
 			We provide innovative solutions for your needs. Check our availability below.
 		</p>

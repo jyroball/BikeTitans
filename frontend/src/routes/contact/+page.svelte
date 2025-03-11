@@ -24,7 +24,6 @@
 	}
 </script>
 
-// src/routes/contact/+page.svelte
 <svelte:head>
 	<title>Contact | BikeTitans</title>
 </svelte:head>
@@ -103,7 +102,7 @@
 
 				<div>
 					<h3 class="mb-2 text-lg font-semibold">Email</h3>
-					<p class="text-gray-700">info@yourcompany.com</p>
+					<p class="text-gray-700">info@BikeTitans.com</p>
 				</div>
 
 				<div>

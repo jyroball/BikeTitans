@@ -2,7 +2,6 @@
 	// Component imports or script logic here if needed
 </script>
 
-// src/routes/about/+page.svelte
 <svelte:head>
 	<title>About | BikeTitans</title>
 </svelte:head>
@@ -13,13 +12,13 @@
 	<div class="mb-8 rounded-lg bg-white p-8 shadow-md">
 		<h2 class="mb-4 text-2xl font-bold">Our Mission</h2>
 		<p class="mb-6 text-gray-700">
-			At YourCompany, we're dedicated to providing real-time occupancy data to help businesses and
+			At BikeTitans, we're dedicated to providing real-time occupancy data to help businesses and
 			organizations optimize their space usage and improve customer experience.
 		</p>
 
 		<h2 class="mb-4 text-2xl font-bold">Our Story</h2>
 		<p class="mb-6 text-gray-700">
-			Founded in 2020, YourCompany began with a simple idea: to create a solution that would help
+			Founded in 2020, BikeTitans began with a simple idea: to create a solution that would help
 			businesses understand and manage occupancy in their spaces. Since then, we've grown into a
 			team of dedicated professionals committed to excellence in data collection and analysis.
 		</p>
