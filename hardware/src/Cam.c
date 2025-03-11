@@ -48,29 +48,49 @@ esp_err_t init_camera(uint32_t xclk_freq_hz, pixformat_t pixel_format, framesize
     // Camera sensor settings
     sensor_t *s = esp_camera_sensor_get();
 
-    // Apply recommended settings
-    s->set_gain_ctrl(s, 0);                 // auto gain off (1 or 0)
-    s->set_exposure_ctrl(s, 0);             // auto exposure off (1 or 0)
-    s->set_agc_gain(s, 14);                 // set gain manually (0 - 31)
-    s->set_aec_value(s, 600);               // set exposure manually  (0-1200)
-    s->set_quality(s, 10);                  // (0 - 63)
-    s->set_gainceiling(s, GAINCEILING_32X); // Image gain (GAINCEILING_x2, x4, x8, x16, x32, x64 or x128)
-    s->set_brightness(s, 1);                // (-2 to 2) - set brightness
-    s->set_lenc(s, 1);                      // lens correction? (1 or 0)
-    s->set_saturation(s, 0);                // (-2 to 2)
-    s->set_contrast(s, 1);                  // (-2 to 2)
-    s->set_sharpness(s, 0);                 // (-2 to 2)
-    s->set_colorbar(s, 0);                  // (0 or 1) - show a testcard
-    s->set_special_effect(s, 0);            // (0 to 6?) apply special effect
-    //       s->set_whitebal(s, 0);                        // white balance enable (0 or 1)
-    //       s->set_awb_gain(s, 1);                        // Auto White Balance enable (0 or 1)
-    //       s->set_wb_mode(s, 0);                         // 0 to 4 - if awb_gain enabled (0 - Auto, 1 - Sunny, 2 - Cloudy, 3 - Office, 4 - Home)
-    //       s->set_dcw(s, 0);                             // downsize enable? (1 or 0)?
-    //       s->set_raw_gma(s, 1);                         // (1 or 0)
-    //       s->set_aec2(s, 0);                            // automatic exposure sensor?  (0 or 1)
-    //       s->set_ae_level(s, 0);                        // auto exposure levels (-2 to 2)
-    s->set_bpc(s, 0);                       // black pixel correction
-    s->set_wpc(s, 0);                       // white pixel correction
+    // // Apply recommended settings
+    // s->set_gain_ctrl(s, 0);                 // auto gain off (1 or 0)
+    // s->set_exposure_ctrl(s, 0);             // auto exposure off (1 or 0)
+    // s->set_agc_gain(s, 14);                 // set gain manually (0 - 31)
+    // s->set_aec_value(s, 600);               // set exposure manually  (0-1200)
+    // s->set_quality(s, 10);                  // (0 - 63)
+    // s->set_gainceiling(s, GAINCEILING_32X); // Image gain (GAINCEILING_x2, x4, x8, x16, x32, x64 or x128)
+    // s->set_brightness(s, 1);                // (-2 to 2) - set brightness
+    // s->set_lenc(s, 1);                      // lens correction? (1 or 0)
+    // s->set_saturation(s, 0);                // (-2 to 2)
+    // s->set_contrast(s, 1);                  // (-2 to 2)
+    // s->set_sharpness(s, 0);                 // (-2 to 2)
+    // s->set_colorbar(s, 0);                  // (0 or 1) - show a testcard
+    // s->set_special_effect(s, 0);            // (0 to 6?) apply special effect
+    // //       s->set_whitebal(s, 0);                        // white balance enable (0 or 1)
+    // //       s->set_awb_gain(s, 1);                        // Auto White Balance enable (0 or 1)
+    // //       s->set_wb_mode(s, 0);                         // 0 to 4 - if awb_gain enabled (0 - Auto, 1 - Sunny, 2 - Cloudy, 3 - Office, 4 - Home)
+    // //       s->set_dcw(s, 0);                             // downsize enable? (1 or 0)?
+    // //       s->set_raw_gma(s, 1);                         // (1 or 0)
+    // //       s->set_aec2(s, 0);                            // automatic exposure sensor?  (0 or 1)
+    // //       s->set_ae_level(s, 0);                        // auto exposure levels (-2 to 2)
+    // s->set_bpc(s, 0);                       // black pixel correction
+    // s->set_wpc(s, 0);                       // white pixel correction
+
+    s->set_brightness(s, 1);  // Increase brightness
+    s->set_saturation(s, -3); // Decrease saturation
+
+    s->set_gain_ctrl(s, 0);
+    s->set_exposure_ctrl(s, 0);
+
+    // Try disabling AWB and setting a fixed mode
+    s->set_whitebal(s, 0);  // Disable auto white balance
+    s->set_awb_gain(s, 1);  // Enable manual white balance gain control
+    //s->set_manual_gain(s, 1.2, 1.0, 1.4); // Adjust red, green, and blue gains
+    //you can also change these too, needs more experimentation xd
+    //s->set_awb_gains(s, 1.2, 1.0, 1.4); // Adjust red, green, and blue gains manually
+    s->set_wb_mode(s, 0);   // Try different modes (0-4), 2 is for daylight
+    s->set_contrast(s, 2);    // Improve contrast
+
+    // Additional sensor-specific settings
+    if (s->id.PID == OV3660_PID) {
+        s->set_vflip(s, 1);     // Flip the image vertically
+    }
 
     // Additional sensor-specific settings
     if (s->id.PID == OV3660_PID)
