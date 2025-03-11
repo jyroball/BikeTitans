@@ -63,26 +63,29 @@ void app_main()
     ESP_LOGI(MAIN_TAG, "Camera setup complete!");
 
     // Loop For State Machien
-    //while (1) {
-    //Mount SD CArd
-    ESP_LOGI(MAIN_TAG, "Mounting SD Card...");
-    mount_sd_card();
-    vTaskDelay(5000 / portTICK_PERIOD_MS);
+    while (1) {
+        //Mount SD CArd
+        ESP_LOGI(MAIN_TAG, "Mounting SD Card...");
+        mount_sd_card();
+        vTaskDelay(5000 / portTICK_PERIOD_MS);
 
-    // clear sdcard before anything
-    clear_sd_card();
+        // clear sdcard before anything
+        clear_sd_card();
 
-    // Take Picture
-    take_pic();
+        // Take Picture
+        take_pic();
 
-    // Upload to google Drive
-    upload_file();
+        // Upload to google Drive
+        upload_file();
 
-    //Unmount SD Card
-    ESP_LOGI(MAIN_TAG, "Unmounting SD Card...");
-    vTaskDelay(5000 / portTICK_PERIOD_MS);
-    unmount_sd_card();
-    //}
+        //Unmount SD Card
+        ESP_LOGI(MAIN_TAG, "Unmounting SD Card...");
+        vTaskDelay(5000 / portTICK_PERIOD_MS);
+        unmount_sd_card();
+
+        //iterate every 15 minutes
+        vTaskDelay(900000 / portTICK_PERIOD_MS);
+    }
 
     ESP_LOGI(MAIN_TAG, "All tests completed.");
 }
