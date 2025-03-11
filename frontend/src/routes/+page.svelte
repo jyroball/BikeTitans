@@ -62,6 +62,24 @@
 	function capitalizeFirstLetter(string: string): string {
 		return string.charAt(0).toUpperCase() + string.slice(1);
 	}
+
+	function getOccupancyColor(openSlots: number, totalSlots: number): string {
+		// Calculate the percentage of open slots
+		const percentOpen = (openSlots / totalSlots) * 100;
+
+		// Green for 100% open, yellow for 50% open, red for 0% open
+		if (percentOpen >= 75) {
+			return 'bg-green-500 text-white';
+		} else if (percentOpen >= 50) {
+			return 'bg-green-300 text-gray-800';
+		} else if (percentOpen >= 25) {
+			return 'bg-yellow-400 text-gray-800';
+		} else if (percentOpen > 0) {
+			return 'bg-orange-500 text-white';
+		} else {
+			return 'bg-red-600 text-white';
+		}
+	}
 </script>
 
 <svelte:head>
@@ -75,6 +93,84 @@
 			We provide innovative solutions for your needs. Check our availability below.
 		</p>
 	</div>
+
+	<div class="overflow-hidden rounded-lg bg-white shadow-lg">
+		<div class="border-b bg-gray-50 p-6">
+			<h2 class="text-2xl font-bold">Available Locations</h2>
+			<p class="text-gray-600">Click on column headers to sort the table</p>
+		</div>
+
+		{#if isLoading}
+			<div class="p-8 text-center text-gray-500">Loading data...</div>
+		{:else if error}
+			<div class="p-8 text-center text-red-500">
+				Error loading data: {error}
+			</div>
+		{:else if tableData.length > 0}
+			<div class="overflow-x-auto">
+				<table class="w-full">
+					<thead class="bg-gray-100">
+						<tr>
+							<th
+								class="relative w-1/3 cursor-pointer px-6 py-3 text-left text-sm font-medium tracking-wider text-gray-600 uppercase hover:bg-gray-200"
+								on:click={() => toggleSort('location')}
+							>
+								<span class="inline-block">Location</span>
+								<span class="absolute ml-2">
+									{sortField === 'location' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}
+								</span>
+							</th>
+							<th
+								class="relative w-1/3 cursor-pointer px-6 py-3 text-left text-sm font-medium tracking-wider text-gray-600 uppercase hover:bg-gray-200"
+								on:click={() => toggleSort('open_slots')}
+							>
+								<span class="inline-block">Open Slots</span>
+								<span class="absolute ml-2">
+									{sortField === 'open_slots' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}
+								</span>
+							</th>
+							<th
+								class="relative w-1/3 cursor-pointer px-6 py-3 text-left text-sm font-medium tracking-wider text-gray-600 uppercase hover:bg-gray-200"
+								on:click={() => toggleSort('total_slot_number')}
+							>
+								<span class="inline-block">Total Slots</span>
+								<span class="absolute ml-2">
+									{sortField === 'total_slot_number' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}
+								</span>
+							</th>
+						</tr>
+					</thead>
+					<tbody class="divide-y divide-gray-200 bg-white">
+						{#each tableData as item}
+							<tr class="hover:bg-gray-50">
+								<td class="px-6 py-4 text-sm font-medium whitespace-nowrap text-gray-900">
+									{capitalizeFirstLetter(item.location)}
+								</td>
+								<td class="px-6 py-4 text-sm whitespace-nowrap">
+									<div class="flex items-center">
+										<div
+											class={`rounded-md px-2 py-1 font-semibold ${getOccupancyColor(item.open_slots, item.total_slot_number)}`}
+										>
+											{item.open_slots}
+										</div>
+										<div class="ml-2 text-gray-500">
+											({Math.round((item.open_slots / item.total_slot_number) * 100)}% open)
+										</div>
+									</div>
+								</td>
+								<td class="px-6 py-4 text-sm whitespace-nowrap text-gray-500">
+									{item.total_slot_number}
+								</td>
+							</tr>
+						{/each}
+					</tbody>
+				</table>
+			</div>
+		{:else}
+			<div class="p-8 text-center text-gray-500">No data available.</div>
+		{/if}
+	</div>
+	<br />
 
 	<div class="mb-16 grid grid-cols-1 gap-8 md:grid-cols-2">
 		<div class="rounded-lg bg-blue-50 p-8 shadow-md">
@@ -107,73 +203,5 @@
 				</a>
 			</div>
 		</div>
-	</div>
-
-	<div class="overflow-hidden rounded-lg bg-white shadow-lg">
-		<div class="border-b bg-gray-50 p-6">
-			<h2 class="text-2xl font-bold">Available Locations</h2>
-			<p class="text-gray-600">Click on column headers to sort the table</p>
-		</div>
-
-		{#if isLoading}
-			<div class="p-8 text-center text-gray-500">Loading data...</div>
-		{:else if error}
-			<div class="p-8 text-center text-red-500">
-				Error loading data: {error}
-			</div>
-		{:else if tableData.length > 0}
-			<div class="overflow-x-auto">
-				<table class="w-full">
-					<thead class="bg-gray-100">
-						<tr>
-							<th
-								class="cursor-pointer px-6 py-3 text-left text-sm font-medium tracking-wider text-gray-600 uppercase hover:bg-gray-200"
-								on:click={() => toggleSort('location')}
-							>
-								Location
-								{#if sortField === 'location'}
-									<span>{sortDirection === 'asc' ? '↑' : '↓'}</span>
-								{/if}
-							</th>
-							<th
-								class="cursor-pointer px-6 py-3 text-left text-sm font-medium tracking-wider text-gray-600 uppercase hover:bg-gray-200"
-								on:click={() => toggleSort('open_slots')}
-							>
-								Open Slots
-								{#if sortField === 'open_slots'}
-									<span>{sortDirection === 'asc' ? '↑' : '↓'}</span>
-								{/if}
-							</th>
-							<th
-								class="cursor-pointer px-6 py-3 text-left text-sm font-medium tracking-wider text-gray-600 uppercase hover:bg-gray-200"
-								on:click={() => toggleSort('total_slot_number')}
-							>
-								Total Slots
-								{#if sortField === 'total_slot_number'}
-									<span>{sortDirection === 'asc' ? '↑' : '↓'}</span>
-								{/if}
-							</th>
-						</tr>
-					</thead>
-					<tbody class="divide-y divide-gray-200 bg-white">
-						{#each tableData as item}
-							<tr class="hover:bg-gray-50">
-								<td class="px-6 py-4 text-sm font-medium whitespace-nowrap text-gray-900">
-									{capitalizeFirstLetter(item.location)}
-								</td>
-								<td class="px-6 py-4 text-sm whitespace-nowrap text-gray-500">
-									{item.open_slots}
-								</td>
-								<td class="px-6 py-4 text-sm whitespace-nowrap text-gray-500">
-									{item.total_slot_number}
-								</td>
-							</tr>
-						{/each}
-					</tbody>
-				</table>
-			</div>
-		{:else}
-			<div class="p-8 text-center text-gray-500">No data available.</div>
-		{/if}
 	</div>
 </section>
