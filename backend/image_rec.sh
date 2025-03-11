@@ -35,13 +35,15 @@ git clone https://github.com/ultralytics/yolov5
 cd yolov5
 pip install -r requirements.txt
 
-# Iterate over all .jpg images in the IMAGE_DIR
-for img in "$IMAGE_DIR"/*.JPG; do
+# Iterate over all .JPG and .jpg images in the IMAGE_DIR
+for img in "$IMAGE_DIR"/*.JPG "$IMAGE_DIR"/*.jpg; do
+  [[ -e "$img" ]] || continue
+  
   img_filename=$(basename "$img")
   
   python3 detect.py --source "$img" --weights ../best.pt --img 640 --device cpu --save-txt --conf-thres 0.45
 
-  label_filename="${img_filename%.JPG}.txt"
+  label_filename="${img_filename%.*}.txt"
   label_file="runs/detect/exp/labels/$label_filename"
   
   if [ -f "$label_file" ]; then
@@ -57,6 +59,7 @@ for img in "$IMAGE_DIR"/*.JPG; do
   rm -rf runs/detect/exp
 done
 
+
 # Go back to the backend directory to run parser
 cd ..
 
@@ -71,10 +74,16 @@ echo "Final Output"
 echo "------------------"
 cat ../frontend/static/output.json
 
-# Commit all changes
-git config --global user.name "GitHub Actions"
-git config --global user.email "github-actions@github.com"
-
-git add ../frontend
-git commit -m "Update frontend based on parser.py changes"
-git push
+# Commit all changes (if any)
+if [[ -n $(git status --porcelain ../frontend) ]]; then
+  echo "Changes detected. Committing..."
+  
+  git config --global user.name "GitHub Actions"
+  git config --global user.email "github-actions@github.com"
+  
+  git add ../frontend
+  git commit -m "Update frontend based on parser.py changes"
+  git push
+else
+  echo "No changes detected. Skipping commit."
+fi
