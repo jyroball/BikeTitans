@@ -4,7 +4,7 @@
 </script>
 
 <div class="flex min-h-screen flex-col">
-	<nav class="bg-slate-800 text-white shadow-md">
+	<nav class="bg-slate-800 py-1.5 text-white shadow-md">
 		<div class="container mx-auto px-4 py-3">
 			<div class="flex items-center justify-between">
 				<a href="{base}/" class="text-xl font-bold">BikeTitans</a>

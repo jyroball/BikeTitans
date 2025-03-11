@@ -7,20 +7,20 @@
 </svelte:head>
 
 <section>
-	<h1 class="mb-6 text-4xl font-bold">About Us</h1>
+	<h1 class="mb-6 text-center text-4xl font-bold">About Us</h1>
 
 	<div class="mb-8 rounded-lg bg-white p-8 shadow-md">
 		<h2 class="mb-4 text-2xl font-bold">Our Mission</h2>
 		<p class="mb-6 text-gray-700">
-			At BikeTitans, we're dedicated to providing real-time occupancy data to help businesses and
-			organizations optimize their space usage and improve customer experience.
+			At BikeTitans, we're dedicated to providing real-time occupancy data to help travelers find
+			safe and open bike rack locations for their bicycles and scooters.
 		</p>
 
 		<h2 class="mb-4 text-2xl font-bold">Our Story</h2>
 		<p class="mb-6 text-gray-700">
-			Founded in 2020, BikeTitans began with a simple idea: to create a solution that would help
-			businesses understand and manage occupancy in their spaces. Since then, we've grown into a
-			team of dedicated professionals committed to excellence in data collection and analysis.
+			Founded in 2025, BikeTitans began with a simple idea: to create a solution that would help
+			travelers store their bikes. Since then, we've grown into a team of dedicated professionals
+			committed to excellence in data collection and analysis.
 		</p>
 
 		<div class="grid grid-cols-1 gap-6 md:grid-cols-3">
@@ -52,7 +52,7 @@
 					class="mx-auto mb-4 h-32 w-32 rounded-full object-cover"
 				/>
 				<h3 class="text-xl font-bold">Samyak Kakatur</h3>
-				<p class="text-gray-600">CEO & Founder</p>
+				<p class="text-gray-600">CTO<br />Senior Product Manager<br />Senior Software Engineer</p>
 			</div>
 
 			<div class="text-center">
@@ -71,8 +71,8 @@
 					alt="Emily Johnson"
 					class="mx-auto mb-4 h-32 w-32 rounded-full object-cover"
 				/>
-				<h3 class="text-xl font-bold">Emily Johnson</h3>
-				<p class="text-gray-600">Head of Data Science</p>
+				<h3 class="text-xl font-bold">Jyro Jimenez</h3>
+				<p class="text-gray-600">Senior Embedded Software Engineer</p>
 			</div>
 		</div>
 	</div>

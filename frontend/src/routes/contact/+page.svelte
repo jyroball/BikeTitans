@@ -29,7 +29,7 @@
 </svelte:head>
 
 <section>
-	<h1 class="mb-6 text-4xl font-bold">Contact Us</h1>
+	<h1 class="mb-6 text-center text-4xl font-bold">Contact Us</h1>
 
 	<div class="grid grid-cols-1 gap-8 md:grid-cols-2">
 		<div class="rounded-lg bg-white p-8 shadow-md">
@@ -79,7 +79,7 @@
 
 					<button
 						type="submit"
-						class="rounded-md bg-blue-600 px-6 py-2 text-white transition-colors hover:bg-blue-700"
+						class="rounded-md bg-blue-600 px-6 py-2 text-white transition-colors hover:cursor-pointer hover:bg-blue-700"
 					>
 						Send Message
 					</button>
@@ -94,9 +94,8 @@
 				<div>
 					<h3 class="mb-2 text-lg font-semibold">Address</h3>
 					<p class="text-gray-700">
-						123 Main Street<br />
-						Suite 456<br />
-						Anytown, USA 12345
+						1600 Pennsylvania Avenue NW<br />
+						Washington DC, USA 20500
 					</p>
 				</div>
 

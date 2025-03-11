@@ -176,8 +176,8 @@
 		<div class="rounded-lg bg-blue-50 p-8 shadow-md">
 			<h2 class="mb-4 text-2xl font-bold">Our Product</h2>
 			<p class="mb-4">
-				Our product helps you monitor and manage occupancy data across multiple locations. See
-				real-time availability and make informed decisions with our intuitive interface.
+				Our product helps you monitor and manage bike-rack occupancy data across multiple locations.
+				See real-time availability and make informed decisions with our intuitive interface.
 			</p>
 			<img
 				src="{base}/images/product-image.png"
@@ -186,15 +186,15 @@
 			/>
 		</div>
 
-		<div class="rounded-lg bg-green-50 p-8 shadow-md">
+		<div class="flex min-h-[300px] flex-col rounded-lg bg-green-50 p-8 shadow-md">
 			<h2 class="mb-4 text-2xl font-bold">Why Choose Us</h2>
-			<ul class="list-disc space-y-2 pl-5">
+			<ul class="flex-grow list-disc space-y-2 pl-5">
 				<li>Real-time occupancy tracking</li>
 				<li>Comprehensive location analytics</li>
 				<li>User-friendly dashboard</li>
 				<li>Customizable alert system</li>
 			</ul>
-			<div class="mt-6">
+			<div class="mt-auto">
 				<a
 					href="{base}/about"
 					class="rounded-md bg-green-600 px-6 py-2 text-white transition-colors hover:bg-green-700"
