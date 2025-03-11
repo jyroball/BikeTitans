@@ -12,7 +12,7 @@
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"format": "prettier --write .",
 		"lint": "prettier --check .",
-		"start": "bun run check && bun run build && bun run dev"
+		"start": "bun run format && bun run check && bun run build && bun run dev"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-static": "^3.0.8",
