@@ -96,7 +96,7 @@
 
 	<div class="overflow-hidden rounded-lg bg-white shadow-lg">
 		<div class="border-b bg-gray-50 p-6">
-			<h2 class="text-2xl font-bold">Available Locations</h2>
+			<h2 class="text-2xl font-bold">Bike Rack Locations</h2>
 			<p class="text-gray-600">Click on column headers to sort the table</p>
 		</div>
 

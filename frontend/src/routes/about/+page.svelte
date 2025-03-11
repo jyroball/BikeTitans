@@ -1,5 +1,5 @@
 <script lang="ts">
-	// Component imports or script logic here if needed
+	import { base } from '$app/paths';
 </script>
 
 <svelte:head>
@@ -46,19 +46,31 @@
 
 		<div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
 			<div class="text-center">
-				<div class="mx-auto mb-4 h-32 w-32 rounded-full bg-gray-300"></div>
-				<h3 class="text-xl font-bold">Jane Doe</h3>
+				<img
+					src="{base}/images/guy1.jpg"
+					alt="Jane Doe"
+					class="mx-auto mb-4 h-32 w-32 rounded-full object-cover"
+				/>
+				<h3 class="text-xl font-bold">Samyak Kakatur</h3>
 				<p class="text-gray-600">CEO & Founder</p>
 			</div>
 
 			<div class="text-center">
-				<div class="mx-auto mb-4 h-32 w-32 rounded-full bg-gray-300"></div>
-				<h3 class="text-xl font-bold">John Smith</h3>
-				<p class="text-gray-600">CTO</p>
+				<img
+					src="{base}/images/guy2.jpg"
+					alt="John Smith"
+					class="mx-auto mb-4 h-32 w-32 rounded-full object-cover"
+				/>
+				<h3 class="text-xl font-bold">Joseph Caraan</h3>
+				<p class="text-gray-600">Senior Software Engineer</p>
 			</div>
 
 			<div class="text-center">
-				<div class="mx-auto mb-4 h-32 w-32 rounded-full bg-gray-300"></div>
+				<img
+					src="{base}/images/guy3.jpg"
+					alt="Emily Johnson"
+					class="mx-auto mb-4 h-32 w-32 rounded-full object-cover"
+				/>
 				<h3 class="text-xl font-bold">Emily Johnson</h3>
 				<p class="text-gray-600">Head of Data Science</p>
 			</div>
