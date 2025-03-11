@@ -1,18 +1,18 @@
 {
-    "bro": {
-        "total_slot_number": 13,
-        "open_slots": 12
-    },
-    "orbach": {
-        "total_slot_number": 12,
-        "open_slots": 11
-    },
-    "bruhhhh": {
-        "total_slot_number": 4,
-        "open_slots": 2
-    },
-    "bruh": {
-        "total_slot_number": 11,
-        "open_slots": 9
-    }
+	"bro": {
+		"total_slot_number": 13,
+		"open_slots": 12
+	},
+	"orbach": {
+		"total_slot_number": 12,
+		"open_slots": 11
+	},
+	"bruhhhh": {
+		"total_slot_number": 4,
+		"open_slots": 2
+	},
+	"bruh": {
+		"total_slot_number": 11,
+		"open_slots": 9
+	}
 }
