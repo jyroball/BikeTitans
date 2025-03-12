@@ -45,26 +45,19 @@ void app_main()
     vTaskDelay(5000 / portTICK_PERIOD_MS);
     ESP_LOGI(MAIN_TAG, "Wi-Fi setup complete!");
 
-    // Initialize Time Synchro
-    ESP_LOGI(MAIN_TAG, "Getting Current Time...");
-    sync_time();
-
-    vTaskDelay(5000 / portTICK_PERIOD_MS);
-    ESP_LOGI(MAIN_TAG, "Time Synced!");
-
-    // Initialize Wifi
+    // Initialize Camera
     if (ESP_OK != init_camera(10 * 1000000, PIXFORMAT_JPEG, FRAMESIZE_VGA, 1))
     {
         ESP_LOGE(MAIN_TAG, "Camera Setup Failed!");
         return;
     }
-
     vTaskDelay(5000 / portTICK_PERIOD_MS);
     ESP_LOGI(MAIN_TAG, "Camera setup complete!");
 
-    // Loop For State Machien
-    while (1) {
-        //Mount SD CArd
+    // Loop For State Machine
+    while (1)
+    {
+        // Mount SD CArd
         ESP_LOGI(MAIN_TAG, "Mounting SD Card...");
         mount_sd_card();
         vTaskDelay(5000 / portTICK_PERIOD_MS);
@@ -75,15 +68,22 @@ void app_main()
         // Take Picture
         take_pic();
 
+        // Sync Time
+        ESP_LOGI(MAIN_TAG, "Getting Current Time...");
+        sync_time();
+
+        vTaskDelay(5000 / portTICK_PERIOD_MS);
+        ESP_LOGI(MAIN_TAG, "Time Synced!");
+
         // Upload to google Drive
         upload_file();
 
-        //Unmount SD Card
+        // Unmount SD Card
         ESP_LOGI(MAIN_TAG, "Unmounting SD Card...");
         vTaskDelay(5000 / portTICK_PERIOD_MS);
         unmount_sd_card();
 
-        //iterate every 15 minutes
+        // iterate every 15 minutes
         vTaskDelay(900000 / portTICK_PERIOD_MS);
     }
 
