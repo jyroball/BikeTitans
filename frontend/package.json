@@ -5,14 +5,14 @@
 	"type": "module",
 	"scripts": {
 		"dev": "vite dev",
-		"build": "vite build --mode=production && BASE_PATH='/BikeTitans' vite build",
+		"build": "bun run format && vite build --mode=production && BASE_PATH='/BikeTitans' vite build",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"format": "prettier --write .",
 		"lint": "prettier --check .",
-		"start": "bun run format && bun run check && bun run build && bun run dev"
+		"start": "bun run check && bun run build && bun run dev"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-static": "^3.0.8",

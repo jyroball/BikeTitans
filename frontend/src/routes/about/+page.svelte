@@ -52,7 +52,7 @@
 					class="mx-auto mb-4 h-32 w-32 rounded-full object-cover"
 				/>
 				<h3 class="text-xl font-bold">Samyak Kakatur</h3>
-				<p class="text-gray-600">CTO<br />Senior Product Manager<br />Senior Software Engineer</p>
+				<p class="text-gray-600">Founder<br />CEO<br />Senior Software Engineer</p>
 			</div>
 
 			<div class="text-center">
@@ -62,7 +62,7 @@
 					class="mx-auto mb-4 h-32 w-32 rounded-full object-cover"
 				/>
 				<h3 class="text-xl font-bold">Joseph Caraan</h3>
-				<p class="text-gray-600">Senior Software Engineer</p>
+				<p class="text-gray-600">Founder<br />CMO<br />Senior Software Engineer</p>
 			</div>
 
 			<div class="text-center">
@@ -72,7 +72,7 @@
 					class="mx-auto mb-4 h-32 w-32 rounded-full object-cover"
 				/>
 				<h3 class="text-xl font-bold">Jyro Jimenez</h3>
-				<p class="text-gray-600">Senior Embedded Software Engineer</p>
+				<p class="text-gray-600">Founder<br />CTO<br />Senior Embedded Software Engineer</p>
 			</div>
 		</div>
 	</div>
