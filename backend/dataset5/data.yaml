@@ -1,8 +1,12 @@
+# Dataset Paths
 train: ../dataset5/train/images
 val: ../dataset5/valid/images
 test: ../dataset5/test/images
 
+# Num Classes
 nc: 1
+
+# Class Labels
 names: ['Bicycle']
 
 roboflow:
