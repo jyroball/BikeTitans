@@ -2,9 +2,9 @@ name: Run Backend on Schedule or Button Push
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "*/20 16-23,0-3 * * *" # Every 20 minutes from 8 AM - 8 PM PT (16:00 - 03:59 UTC)
-    - cron: "0 4-15 * * *" # Every hour from 8 PM - 8 AM PT (04:00 - 15:59 UTC)
+  # schedule:
+  #   - cron: "*/20 16-23,0-3 * * *" # Every 20 minutes from 8 AM - 8 PM PT (16:00 - 03:59 UTC)
+  #   - cron: "0 4-15 * * *" # Every hour from 8 PM - 8 AM PT (04:00 - 15:59 UTC)
 
 jobs:
   run-backend:
