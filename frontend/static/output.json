@@ -1,18 +1,18 @@
 {
     "Orbach Front 1": {
         "total_slot_number": 6,
-        "open_slots": 1
+        "open_slots": 5
     },
     "Orbach Back 2": {
         "total_slot_number": 12,
-        "open_slots": 5
+        "open_slots": 10
     },
     "Orbach Back 3": {
         "total_slot_number": 10,
-        "open_slots": 2
+        "open_slots": 8
     },
     "Orbach Back 1": {
         "total_slot_number": 12,
-        "open_slots": 3
+        "open_slots": 11
     }
 }
