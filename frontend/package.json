@@ -15,20 +15,20 @@
 		"start": "bun run check && bun run build && bun run dev"
 	},
 	"devDependencies": {
-		"@sveltejs/adapter-static": "^3.0.8",
-		"@sveltejs/kit": "^2.19.0",
-		"@sveltejs/vite-plugin-svelte": "^5.0.3",
-		"@tailwindcss/vite": "^4.0.13",
-		"prettier": "^3.5.3",
-		"prettier-plugin-svelte": "^3.3.3",
-		"prettier-plugin-tailwindcss": "^0.6.11",
-		"svelte": "^5.23.0",
-		"svelte-check": "^4.1.5",
-		"tailwindcss": "^4.0.13",
-		"typescript": "^5.8.2",
-		"vite": "^6.2.1"
+		"@sveltejs/adapter-static": "^3.0.10",
+		"@sveltejs/kit": "^2.49.2",
+		"@sveltejs/vite-plugin-svelte": "^5.1.1",
+		"@tailwindcss/vite": "^4.1.18",
+		"prettier": "^3.7.4",
+		"prettier-plugin-svelte": "^3.4.1",
+		"prettier-plugin-tailwindcss": "^0.6.14",
+		"svelte": "^5.46.1",
+		"svelte-check": "^4.3.5",
+		"tailwindcss": "^4.1.18",
+		"typescript": "^5.9.3",
+		"vite": "^6.4.1"
 	},
 	"dependencies": {
-		"@types/node": "^22.13.10"
+		"@types/node": "^22.19.3"
 	}
 }
